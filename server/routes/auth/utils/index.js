@@ -15,10 +15,10 @@ const login = (res, user) => {
   res.cookie("x-access-token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    expires: new Date(new Date().getTime()+86409000).toUTCString(),
+    expires: new Date(new Date().getTime()+86409000),
   })
       
-  return res.json({ user });
+  return res.json({ ...user });
 }
 
 /**
@@ -27,7 +27,7 @@ const login = (res, user) => {
  * @returns {object} | express response
  */
 const logout = (res) => {
-  res.cookie("x-access-token", null, { expires: Date.now(0) });
+  res.cookie("x-access-token", null, { expires: new Date(Date.now()) });
 
   return res.sendStatus(204);
 }
