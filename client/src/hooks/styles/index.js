@@ -101,6 +101,7 @@ export const useAuthStyle = makeStyles((theme) => ({
     },
     formTitle: {
         fontSize: "2rem",
+        fontWeight: "bold",
     },
     form: {},
     fieldset: {

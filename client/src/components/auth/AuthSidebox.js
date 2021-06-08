@@ -12,7 +12,7 @@ const AuthSidebox = () => {
         <img src={BGImage} alt="chatapp illustration" className={classes.image} />
         <div className={classes.sideboxTextContainer}>
           <BubbleIcon />
-          <h1 className={classes.sideboxText}>Converse with anyone with any language</h1>
+          <h1 className={classes.sideboxText}>Converse with anyone <br/ > with any language</h1>
         </div>
       </Grid>
     );

@@ -14,7 +14,7 @@ const Login = () => {
   }
 
   return (
-    <AuthContainer title="Welcome back!" headerActionName="Create account" headerActionPath="/register">
+    <AuthContainer title="Welcome back!" headerActionName="Create account" headerTitle="Don't have an account?" headerActionPath="/register">
       <LoginForm />
     </AuthContainer>
   );
