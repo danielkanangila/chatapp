@@ -9,8 +9,21 @@ import {
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
+  // const csrfToken = await getCsrfToken()
+  // console.log((csrfToken));
   return config;
 });
+
+export const getCsrfToken = async () => {
+  try {
+    const response = await axios.get('/auth/csrfToken')
+    if (response.statusText === "ok") return response.data;
+
+    throw new Error("Can't retrieve the csrfToken.")
+  } catch(err) {
+    console.error(err)
+  }
+}
 
 // USER THUNK CREATORS
 

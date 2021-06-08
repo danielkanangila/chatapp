@@ -4,6 +4,7 @@ const { join } = require("path");
 const logger = require("morgan");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const csurf = require("csurf");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const db = require("./db");
 const { User } = require("./db/models");
@@ -21,6 +22,10 @@ app.use(urlencoded({ extended: false }));
 app.use(express.static(join(__dirname, "public")));
 app.use(cookieParser())
 
+// csrf protection setting
+app.use(csurf({ cookie: true }));
+
+// authentication setting
 app.use(authentication);
 
 // require api routes here after I create them
