@@ -11,6 +11,7 @@ import {
   FormHelperText,
 } from "@material-ui/core";
 import { register } from "./../../store/utils/thunkCreators";
+import CustomButton from "../CustomButton";
 
 const Login = (props) => {
   const history = useHistory();
@@ -41,7 +42,7 @@ const Login = (props) => {
       <Box>
         <Grid container item>
           <Typography>Need to log in?</Typography>
-          <Button onClick={() => history.push("/login")}>Login</Button>
+          <CustomButton onClick={() => history.push("/login")} variant="contained">Login</CustomButton>
         </Grid>
         <form onSubmit={handleRegister}>
           <Grid>
@@ -97,7 +98,7 @@ const Login = (props) => {
                 </FormHelperText>
               </FormControl>
             </Grid>
-            <Button type="submit" variant="contained" size="large">
+            <Button type="submit" variant="contained" size="large" color="primary">
               Create
             </Button>
           </Grid>
