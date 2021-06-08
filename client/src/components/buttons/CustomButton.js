@@ -16,11 +16,11 @@ const useStyle = makeStyles((theme) => ({
     },
 }))
 
-const CustomButton = ({ styles = {}, children }) => {
+const CustomButton = ({ styles = {}, children, ...restProps }) => {
     const classes = useStyle({ styles })
 
     return (
-        <Button variant="contained" color="primary" className={classes.root}>
+        <Button variant="contained" color="primary" className={classes.root} {...restProps}>
             {children}
         </Button>
     );
