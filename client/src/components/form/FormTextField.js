@@ -8,10 +8,10 @@ const FormTextField = ({
     type="text",
     required=false,
 }) => {
-    const { errors, values, status, setFieldTouched, setFieldValue } = useFormikContext();
+    const { errors, touched, values, status, setFieldTouched, setFieldValue } = useFormikContext();
 
-    const hasError = () => errors.hasOwnProperty(name) ||
-        (status && status.hasOwnProperty(name))
+    const hasError = () => (errors.hasOwnProperty(name) && touched.hasOwnProperty(name)) ||
+        (touched.hasOwnProperty(name) && (status && status.hasOwnProperty(name)))
 
     return (
         <Grid>
@@ -27,9 +27,11 @@ const FormTextField = ({
                   onBlur={() => setFieldTouched(name)}
                   style={{marginTop: 15}}
                 />
-                <FormHelperText>
-                    {errors[name]}
-                </FormHelperText>
+                {hasError() && 
+                    <FormHelperText>
+                        {errors[name]}
+                    </FormHelperText>
+                }
             </FormControl>
         </Grid>
     );
