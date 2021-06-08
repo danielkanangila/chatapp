@@ -20,10 +20,17 @@ app.use(logger("dev"));
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(express.static(join(__dirname, "public")));
-app.use(cookieParser())
+app.use(cookieParser());
 
 // csrf protection setting
-app.use(csurf({ cookie: true }));
+app.use(csurf({ cookie: true, }));
+// Make the token available to all trsource
+app.use((req, res, next) => {
+  const token = req.csrfToken()
+  res.locals.csrfToken = token;
+  res.cookie('XSRF-TOKEN', token);
+  next()
+})
 
 // authentication setting
 app.use(authentication);

@@ -70,6 +70,4 @@ router.get("/user", (req, res, next) => {
   }
 });
 
-router.get('/csrfToken', (req, res) => res.json({ csrfToken: req.csrfToken() }))
-
 module.exports = router;

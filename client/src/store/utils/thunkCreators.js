@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie"
 import socket from "../../socket";
 import {
   gotConversations,
@@ -9,21 +10,14 @@ import {
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
-  // const csrfToken = await getCsrfToken()
-  // console.log((csrfToken));
+  const csrfToken = Cookies.get("XSRF-TOKEN")
+
+  if (csrfToken) {
+    config.headers['credentials'] = 'same-origin';
+    config.headers['CSRF-Token'] = csrfToken;
+  }
   return config;
 });
-
-export const getCsrfToken = async () => {
-  try {
-    const response = await axios.get('/auth/csrfToken')
-    if (response.statusText === "ok") return response.data;
-
-    throw new Error("Can't retrieve the csrfToken.")
-  } catch(err) {
-    console.error(err)
-  }
-}
 
 // USER THUNK CREATORS
 
