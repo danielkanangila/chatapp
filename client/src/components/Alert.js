@@ -1,4 +1,5 @@
 import React from 'react';
+import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MUIAlert from '@material-ui/lab/Alert';
 
@@ -14,9 +15,9 @@ const Alert = ({ message, type="error", visibility=false }) => {
     if (!visibility) return <></>;
 
     return (
-        <div className={classes.root}>
+        <Box className={classes.root}>
             <MUIAlert severity={type}>{message}</MUIAlert>
-        </div>
+        </Box>
     );
 };
 

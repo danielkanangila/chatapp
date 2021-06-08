@@ -25,7 +25,7 @@ export const useAuth = () => {
         email:yup.string().email(),
         password: yup.string().min(8),
         confirmPassword: yup.string()
-            .oneOf([yup.ref('password'), null], "Passwords must be match.")
+            .oneOf([yup.ref('password'), null], "Passwords must match.")
     })
 
     const loginValidationSchema = yup.object().shape({
@@ -47,7 +47,7 @@ export const useAuth = () => {
 
     const login = async (data, { resetForm }) => {
         await dispatch(authenticateUser(data))
-        console.log(user);
+        
         _handleResponse(resetForm)
     }
 

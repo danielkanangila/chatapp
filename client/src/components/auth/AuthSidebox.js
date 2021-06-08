@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, Box, Typography } from '@material-ui/core';
 
 import { useAuthStyle } from './../../hooks/styles';
 import BGImage from "./../../assets/images/bg-img.png"
@@ -10,10 +10,10 @@ const AuthSidebox = () => {
     return (
         <Grid item className={classes.sidebox}>
         <img src={BGImage} alt="chatapp illustration" className={classes.image} />
-        <div className={classes.sideboxTextContainer}>
+        <Box className={classes.sideboxTextContainer}>
           <BubbleIcon />
-          <h1 className={classes.sideboxText}>Converse with anyone with any language</h1>
-        </div>
+          <Typography className={classes.sideboxText}>Converse with anyone <br/ > with any language</Typography>
+        </Box>
       </Grid>
     );
 };

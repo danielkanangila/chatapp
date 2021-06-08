@@ -87,7 +87,7 @@ export const useAuthStyle = makeStyles((theme) => ({
         
         [theme.breakpoints.up('sm')]: {
             position: "absolute",
-            top: "50%",
+            top: "40%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: "50%",
@@ -101,6 +101,7 @@ export const useAuthStyle = makeStyles((theme) => ({
     },
     formTitle: {
         fontSize: "2rem",
+        fontWeight: "bold",
     },
     form: {},
     fieldset: {
