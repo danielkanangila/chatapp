@@ -47,7 +47,7 @@ export const useAuth = () => {
 
     const login = async (data, { resetForm }) => {
         await dispatch(authenticateUser(data))
-        console.log(user);
+        
         _handleResponse(resetForm)
     }
 
