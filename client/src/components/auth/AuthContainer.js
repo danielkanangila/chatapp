@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography, Box } from '@material-ui/core';
 
 import { useAuthStyle } from '../../hooks/styles';
 import AuthSidebox from './AuthSidebox';
@@ -13,10 +13,10 @@ const AuthContainer = ({ title, headerActionName, headerActionPath, children }) 
             <AuthSidebox />
             <Grid className={classes.mainContent} container direction="column">
                 <AuthHeader actionLabel={headerActionName} actionPath={headerActionPath} />
-                <div className={classes.formContainer}>
+                <Box className={classes.formContainer}>
                     <Typography variant="h1" className={classes.formTitle}>{title}</Typography>
                     {children}
-                </div>
+                </Box>
             </Grid>
         </Grid>
     );
