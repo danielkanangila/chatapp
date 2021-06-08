@@ -28,18 +28,11 @@ export const useAuth = () => {
             .oneOf([yup.ref('password'), null], "Passwords must be match.")
     })
 
-    const _hasFieldError = (errors) => {
-
-    }
-
-    const register = async (data, { setStatus, resetForm }) => {
+    const register = async (data, { resetForm }) => {
         await dispatch(createUser(data))
 
         if (user.id) return resetForm();
-        else if (user.error) {
-            if (_hasFieldError(user.error)) return setStatus(user.error);
-            else setError(user.error)
-        }
+        else if (user.error) return setError(user.error)
     
     }
 
