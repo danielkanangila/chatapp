@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { register as createUser } from "./../store/utils/thunkCreators"
+import { register as createUser, login as authenticateUser } from "./../store/utils/thunkCreators"
 import * as yup from "yup"
 
 export const useAuth = () => {
@@ -23,20 +23,33 @@ export const useAuth = () => {
     const registerValidationSchema = yup.object().shape({
         username: yup.string().required(),
         email:yup.string().email(),
-        password: yup.string().length(8),
+        password: yup.string().min(8),
         confirmPassword: yup.string()
             .oneOf([yup.ref('password'), null], "Passwords must be match.")
     })
 
+    const loginValidationSchema = yup.object().shape({
+        username: yup.string().required(),
+        password: yup.string().required(),
+    })
+
+    const _handleResponse = (resetForm) => {
+        if (user.id) return resetForm();
+        else if (user.error) return setError(user.error)
+    }
+
     const register = async (data, { resetForm }) => {
         await dispatch(createUser(data))
 
-        if (user.id) return resetForm();
-        else if (user.error) return setError(user.error)
+        _handleResponse(resetForm)
     
     }
 
-    const login = () => {}
+    const login = async (data, { resetForm }) => {
+        await dispatch(authenticateUser(data))
+        console.log(user);
+        _handleResponse(resetForm)
+    }
 
     return {
         user,
@@ -44,6 +57,7 @@ export const useAuth = () => {
         loginInitialValue,
         error,
         registerValidationSchema,
+        loginValidationSchema,
         register,
         login,
     }

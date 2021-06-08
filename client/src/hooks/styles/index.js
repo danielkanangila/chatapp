@@ -61,13 +61,14 @@ export const useAuthStyle = makeStyles((theme) => ({
         padding: theme.spacing(2),
         display: "flex",
         flexWrap: "no-wrap",
+        position: "relative",
+
         [theme.breakpoints.up('sm')]: {
-            padding: theme.spacing(5),
+            height: "100vh",
         },
         [theme.breakpoints.up('md')]: {
             display: "block",
-            position: "relative",
-            width: "60%",
+            width: "70%",
             height: "100vh",
         }
     },
@@ -82,12 +83,20 @@ export const useAuthStyle = makeStyles((theme) => ({
     },
     formContainer: {
         width: "95%",
-        margin: "0 auto",
-        paddingTop: theme.spacing(6),
+        marginTop: theme.spacing(7),
+        
+        [theme.breakpoints.up('sm')]: {
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "50%",
+        },
         [theme.breakpoints.up('md')]: {
-            width: "80%",
-            margin: "0 auto",
-            paddingTop: theme.spacing(9)
+            width: "60%",
+        },
+        [theme.breakpoints.up('lg')]: {
+            width: "35%",
         }
     },
     formTitle: {
