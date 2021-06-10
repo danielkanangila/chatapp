@@ -6,15 +6,22 @@ import Signup from "./components/pages/Signup.js";
 import Login from "./components/pages/Login.js";
 import { Home, SnackbarError } from "./components";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import { useWebSocket } from "./hooks/useWebSocket";
 
 const Routes = (props) => {
   const { user, fetchUser } = props;
   const [errorMessage, setErrorMessage] = useState("");
   const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const ws = useWebSocket();
 
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    fetchUser()
+  }, [fetchUser])
+
+  useEffect(() => {
+    // signal socket sever that user in online
+    if (user.id) ws.goOnline(user); 
+  }, [user]) // eslint-disable-line
 
   useEffect(() => {
     if (user.error) {
