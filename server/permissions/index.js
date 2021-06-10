@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
-const events = require("events");
 const { Conversation } = require("./../db/models");
+const events = require("./../utils/events");
 
 /**
  * This middleware validate the message body, 
@@ -52,6 +52,8 @@ const canSaveMessage = async (req, res, next) => {
               user1Id: senderId,
               user2Id: recipientId,
             });
+            // emit event to signal that new conversation is started
+            events.emit('newconversation')
         }
         req.body.conversationId = conversation.id;
         return next()
