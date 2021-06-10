@@ -10,7 +10,7 @@ const login = (res, user) => {
   const token = jwt.sign(
       { id: user.id },
       process.env.SESSION_SECRET,
-      { expiresIn: 86409000 }
+      { expiresIn: 172800 }
     );
   res.cookie("x-access-token", token, {
     httpOnly: true,
@@ -27,7 +27,6 @@ const login = (res, user) => {
  * @returns {object} | express response
  */
 const logout = (res) => {
-  // res.cookie("x-access-token", null, { expires: new Date(Date.now()) });
   res.clearCookie("x-access-token");
 
   return res.sendStatus(204);
