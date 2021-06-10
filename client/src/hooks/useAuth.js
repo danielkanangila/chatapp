@@ -16,7 +16,7 @@ export const useAuth = () => {
     const ws = useWebSocket();
 
     useEffect(() => {
-        if(user.id) ws.goOnline(user)
+        if(user.id) ws.goOnline(user) // signal socket server that user is online
     }, [user])// eslint-disable-line
 
     const registerInitialValue = {
