@@ -1,12 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { register as createUser, login as authenticateUser } from "./../store/utils/thunkCreators"
 import * as yup from "yup"
+import { useWebSocket } from "./useWebSocket";
+import { clearOnLogout } from "../store";
+import { 
+    register as createUser, 
+    login as authenticateUser,
+    logout as logoutUser, 
+} from "./../store/utils/thunkCreators";
 
 export const useAuth = () => {
     const [error, setError] = useState();
     const user = useSelector(state => state.user);
     const dispatch = useDispatch();
+    const ws = useWebSocket();
+
+    useEffect(() => {
+        if(user.id) ws.goOnline(user)
+    }, [user])// eslint-disable-line
 
     const registerInitialValue = {
         username: "",
@@ -51,6 +62,12 @@ export const useAuth = () => {
         _handleResponse(resetForm)
     }
 
+    const logout = async () => {
+        dispatch(logoutUser(user.id));
+        dispatch(clearOnLogout());
+        ws.logout(user.id);
+    }
+
     return {
         user,
         registerInitialValue,
@@ -60,5 +77,6 @@ export const useAuth = () => {
         loginValidationSchema,
         register,
         login,
+        logout,
     }
 }
