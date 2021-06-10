@@ -1,6 +1,5 @@
 import axios from "axios";
-import Cookies from "js-cookie"
-// import socket from "../../socket";
+import Cookies from "js-cookie";
 import {
   gotConversations,
   addConversation,
@@ -78,19 +77,11 @@ const saveMessage = async (body) => {
   return data;
 };
 
-const sendMessage = (data, body) => {
-  // socket.emit("new-message", {
-  //   message: data.message,
-  //   recipientId: body.recipientId,
-  //   sender: data.sender,
-  // });
-};
-
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
-export const postMessage = (body) => (dispatch) => {
+export const postMessage = (body, sendMessage) => async (dispatch) => {
   try {
-    const data = saveMessage(body);
+    const data = await saveMessage(body);
 
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
