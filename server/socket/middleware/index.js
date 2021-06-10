@@ -1,11 +1,20 @@
-const authentication = (socket, next) => {
-    if (!socket.handshake.auth.user) {
-        return next(new Error("Authentication Error."));
-    }
-    socket.request.user = socket.handshake.auth.user
-    next();
+const Cookies = require("../utils/socket-cookies");
+const AccessToken = require("./../../utils/access-token");
+
+const socketAuthentication = async (socket, next) => {
+    const cookies = Cookies(socket);
+    const accessToken = AccessToken(cookies.get('x-access-token'));
+
+    if (!accessToken.isTokenValid) return next(new Error('Unauthorized.')) 
+
+    socket.request.user = accessToken.getUser();
+
+    next()
 }
 
+const warp = middleware => (socket, next) => middleware(socket.request, {}, next);
+
 module.exports = {
-    authentication,
+    authentication: socketAuthentication,
+    warp
 }
