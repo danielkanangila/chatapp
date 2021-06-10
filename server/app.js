@@ -27,7 +27,6 @@ app.use(csurf({ cookie: true }));
 // Make the token available to all trsource
 app.use((req, res, next) => {
   const token = req.csrfToken()
-  res.locals.csrfToken = token;
   res.cookie('XSRF-TOKEN', token);
   next()
 })
