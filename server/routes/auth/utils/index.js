@@ -27,7 +27,8 @@ const login = (res, user) => {
  * @returns {object} | express response
  */
 const logout = (res) => {
-  res.cookie("x-access-token", null, { expires: new Date(Date.now()) });
+  // res.cookie("x-access-token", null, { expires: new Date(Date.now()) });
+  res.clearCookie("x-access-token");
 
   return res.sendStatus(204);
 }
