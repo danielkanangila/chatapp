@@ -12,12 +12,8 @@ const newMessage = (socket, { message, sender }) => {
     socket.broadcast.emit("new-message", { message, sender });
 }
 
-const messageReceived = (socket, message) => {
-    socket.broadcast.emit("message-received", message);
-}
-
-const messageRead = (socket, message) => {
-    socket.broadcast.emit("message-read", message);
+const updateMessage = (socket, message) => {
+    socket.broadcast.emit("update-message", message);
 }
 
 const logout = (socket, userId) => {
@@ -31,7 +27,6 @@ const logout = (socket, userId) => {
 module.exports = {
     addOnlineUser,
     newMessage,
-    messageRead,
-    messageReceived,
+    updateMessage,
     logout,
 }

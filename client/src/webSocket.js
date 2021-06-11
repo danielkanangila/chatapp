@@ -7,6 +7,7 @@ import {
     setNewMessage,
     removeOfflineUser,
     addOnlineUser,
+    updateMessage,
 } from "./store/conversations"
 
 export const WebSocketContext = createContext();
@@ -32,6 +33,7 @@ const WebSocketContextProvider = ({ children }) => {
             socket.on("new-message", (data) => {
               dispatch(setNewMessage(data.message, data.sender));
             });
+            socket.on('update-message', data => dispatch(updateMessage(data)));
 
             socket.on("connect_error", (err) => console.log(err.message));
 

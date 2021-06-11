@@ -24,6 +24,21 @@ export const addMessageToStore = (state, payload) => {
   });
 };
 
+export const updateMessageInStore = (state, payload) => {
+  const { message } = payload;
+
+  return state.map(conversation => {
+    if(conversation.id === message.conversationId) {
+      return {
+        ...conversation,
+        messages: conversation.messages.map(m => m.id === message.id ? message : m)
+      }
+    } else {
+      return conversation;
+    }
+  })
+}
+
 export const addOnlineUserToStore = (state, id) => {
   return state.map((convo) => {
     if (convo.otherUser.id === id) {

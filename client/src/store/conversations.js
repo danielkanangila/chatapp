@@ -4,6 +4,7 @@ import {
   addSearchedUsersToStore,
   removeOfflineUserFromStore,
   addMessageToStore,
+  updateMessageInStore,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -15,6 +16,7 @@ const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
+const UPDATE_MESSAGE = "UPDATE_MESSAGE";
 
 // ACTION CREATORS
 
@@ -31,6 +33,13 @@ export const setNewMessage = (message, sender) => {
     payload: { message, sender: sender || null },
   };
 };
+
+export const updateMessage = (message ) => {
+  return {
+    type: UPDATE_MESSAGE,
+    payload: { message },
+  };
+}
 
 export const addOnlineUser = (id) => {
   return {
@@ -85,6 +94,8 @@ const reducer = (state = [], action) => {
       return addSearchedUsersToStore(state, action.users);
     case CLEAR_SEARCHED_USERS:
       return state.filter((convo) => convo.id);
+    case UPDATE_MESSAGE:
+      return updateMessageInStore(state, action.payload);
     case ADD_CONVERSATION:
       return addNewConvoToStore(
         state,

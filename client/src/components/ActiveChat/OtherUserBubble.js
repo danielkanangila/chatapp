@@ -1,6 +1,16 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Avatar } from "@material-ui/core";
+import { useDispatch } from "react-redux";
+import { isInViewport } from "./../../utils";
+import { useWebSocket } from "../../hooks/useWebSocket";
+import { updateMessage } from "../../store/utils/thunkCreators";
+
+export const messageStatus = {
+  SENT: 'sent',
+  RECEIVED: 'received',
+  READ: 'read',
+};
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -34,8 +44,26 @@ const useStyles = makeStyles(() => ({
 const OtherUserBubble = (props) => {
   const classes = useStyles();
   const { text, time, otherUser } = props;
+  const chatRef = useRef();
+  const dispatch = useDispatch();
+  const ws = useWebSocket();
+
+  useEffect(() => {
+    // don't update status if message status is already read
+    if (props.status === messageStatus.READ)
+      return;
+    
+    if(isInViewport(chatRef.current)) {
+      dispatch(updateMessage(props.id, { 
+        recipientId: props.otherUser.id, 
+        senderId: props.senderId,
+         status: messageStatus.READ 
+        }, ws.emitMessageUpdated));
+    }
+  }, [props]) // eslint-disable-line
+
   return (
-    <Box className={classes.root}>
+    <Box className={classes.root} ref={chatRef}>
       <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
       <Box>
         <Typography className={classes.usernameDate}>
@@ -49,4 +77,4 @@ const OtherUserBubble = (props) => {
   );
 };
 
-export default OtherUserBubble;
+export default React.memo(OtherUserBubble);

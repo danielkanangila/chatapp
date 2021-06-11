@@ -4,8 +4,7 @@ const {
     logout, 
     addOnlineUser,
     newMessage,
-    messageReceived,
-    messageRead,
+    updateMessage,
 } = require("./handlers");
 
 /**
@@ -23,15 +22,15 @@ const initialize = (server) => {
     
         socket.on("new-message", (data) => newMessage(socket, data));
     
-        socket.on("message-read", (data) => messageRead(socket, data));
-    
-        socket.on("message-received", (data) => messageReceived(socket, data));
+        socket.on("update-message", (data) => updateMessage(socket, data));
     
         socket.on("logout", (id) => logout(socket, id));
 
         socket.on('error', err => console.log(err));
 
-        socket.on("disconnect", () => logout(socket, socket.request.user.id || null))
+        socket.on("disconnect", () => logout(
+            socket, socket.request.user ? socket.request.user.id : null
+        ));
     });
 }
 
