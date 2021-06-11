@@ -7,12 +7,20 @@ import Login from "./components/pages/Login.js";
 import { Home, SnackbarError } from "./components";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { useWebSocket } from "./hooks/useWebSocket";
+import { useWindowVisibility } from "./hooks/useWindowVisibility";
 
 const Routes = (props) => {
   const { user, fetchUser } = props;
   const [errorMessage, setErrorMessage] = useState("");
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const ws = useWebSocket();
+  const myWindow = useWindowVisibility();
+
+  useEffect(() => {
+    window.addEventListener("visibilitychange", myWindow.updateVisibility);
+    
+    return () => window.removeEventListener("visibilitychange", myWindow.updateVisibility);
+  });
 
   useEffect(() => {
     fetchUser()
