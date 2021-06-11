@@ -32,6 +32,10 @@ const WebSocketContextProvider = ({ children }) => {
             socket.on("new-message", (data) => {
               dispatch(setNewMessage(data.message, data.sender));
             });
+
+            socket.on("connect_error", (err) => console.log(err.message));
+
+            socket.on("disconnet", () => console.log("Connection closed by the server."))
         });
     }
 
