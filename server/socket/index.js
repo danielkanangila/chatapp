@@ -31,7 +31,7 @@ const initialize = (server) => {
 
         socket.on('error', err => console.log(err));
 
-        socket.on("disconnect", () => logout(socket, socket.request.user.id))
+        socket.on("disconnect", () => logout(socket, socket.request.user.id || null))
     });
 }
 
