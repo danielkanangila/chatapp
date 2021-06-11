@@ -8,6 +8,8 @@ export const useWindowVisibility = () => {
     const updateVisibility = () => dispatch(setVisibilityAction(!isWindowVisible));
 
     const isInViewport = (element) => {
+        if (!element) return false;
+        
         const rect = element.getBoundingClientRect();
         return (
             rect.top >= 0 &&

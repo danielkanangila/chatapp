@@ -1,10 +1,12 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Avatar } from "@material-ui/core";
-import { useDispatch } from "react-redux";
-import { isInViewport } from "./../../utils";
+import VisibilitySensor from "react-visibility-sensor";
 import { useWebSocket } from "../../hooks/useWebSocket";
 import { updateMessage } from "../../store/utils/thunkCreators";
+
+import { useWindowVisibility } from "../../hooks/useWindowVisibility";
 
 export const messageStatus = {
   SENT: 'sent',
@@ -41,39 +43,62 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const OtherUserBubble = (props) => {
+const OtherUserBubble = ({ 
+  id,
+  text, 
+  time, 
+  otherUser, 
+  status, 
+  senderId,
+  messagesRef,
+}) => {
   const classes = useStyles();
-  const { text, time, otherUser } = props;
   const chatRef = useRef();
   const dispatch = useDispatch();
   const ws = useWebSocket();
+  const myWindow = useWindowVisibility();
 
-  useEffect(() => {
-    // don't update status if message status is already read
-    if (props.status === messageStatus.READ)
-      return;
-    
-    if(isInViewport(chatRef.current)) {
-      dispatch(updateMessage(props.id, { 
-        recipientId: props.otherUser.id, 
-        senderId: props.senderId,
-         status: messageStatus.READ 
-        }, ws.emitMessageUpdated));
+  const updateMessageStatus = (newStatus) => {
+    dispatch(updateMessage(id, { 
+      recipientId: otherUser.id, 
+      senderId,
+      status: newStatus
+    }, ws.emitMessageUpdated));
+  }
+
+  const handleVisibilityChange = (isVisible) => {
+    if (status === messageStatus.READ) return;
+
+    if(myWindow.isWindowVisible && isVisible) {
+      /**
+     * Updating message status to READ if window is visible and this message 
+     * component is in the viewport.
+     */
+      
+      updateMessageStatus(messageStatus.READ);
+    } else {
+      /**
+       * If windows is not visible and this message component is not visible in
+       * the viewport but the application is running, we're changing the message to RECEIVED
+       */
+       updateMessageStatus(messageStatus.RECEIVED);
     }
-  }, [props]) // eslint-disable-line
+  }
 
   return (
-    <Box className={classes.root} ref={chatRef}>
-      <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
-      <Box>
-        <Typography className={classes.usernameDate}>
-          {otherUser.username} {time}
-        </Typography>
-        <Box className={classes.bubble}>
-          <Typography className={classes.text}>{text}</Typography>
+    <VisibilitySensor onChange={handleVisibilityChange}>
+      <Box className={classes.root} ref={chatRef}>
+        <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
+        <Box>
+          <Typography className={classes.usernameDate}>
+            {otherUser.username} {time}
+          </Typography>
+          <Box className={classes.bubble}>
+            <Typography className={classes.text}>{text}</Typography>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </VisibilitySensor>
   );
 };
 
