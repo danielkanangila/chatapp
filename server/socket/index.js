@@ -4,6 +4,8 @@ const {
     logout, 
     addOnlineUser,
     newMessage,
+    messageReceived,
+    messageRead,
 } = require("./handlers");
 
 /**
@@ -13,13 +15,17 @@ const {
 const initialize = (server) => {
     const io = new Server(server);
 
-    // authenticate user middleware
+    // authenticate user
     io.use(authentication);
   
     io.on("connection", (socket) => {
         socket.on("go-online", ((id) => addOnlineUser(socket, id)));
     
         socket.on("new-message", (data) => newMessage(socket, data));
+    
+        socket.on("message-read", (data) => messageRead(socket, data));
+    
+        socket.on("message-received", (data) => messageReceived(socket, data));
     
         socket.on("logout", (id) => logout(socket, id));
 
