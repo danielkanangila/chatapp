@@ -21,7 +21,6 @@ const logout = (socket, userId) => {
     }
 }
 
-
 module.exports = {
     addOnlineUser,
     newMessage,

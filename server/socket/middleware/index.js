@@ -7,7 +7,7 @@ const socketAuthentication = async (socket, next) => {
 
     if (!accessToken.isTokenValid) return next(new Error('Unauthorized.')) 
 
-    socket.request.user = accessToken.getUser();
+    socket.request.user = await accessToken.getUser();
 
     next()
 }

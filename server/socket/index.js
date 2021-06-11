@@ -3,7 +3,7 @@ const { authentication } = require("./middleware");
 const { 
     logout, 
     addOnlineUser,
-    newMessage 
+    newMessage,
 } = require("./handlers");
 
 /**
@@ -23,7 +23,9 @@ const initialize = (server) => {
     
         socket.on("logout", (id) => logout(socket, id));
 
-        socket.on('error', err => console.log(err))
+        socket.on('error', err => console.log(err));
+
+        socket.on("disconnect", () => logout(socket, socket.request.user.id))
     });
 }
 
