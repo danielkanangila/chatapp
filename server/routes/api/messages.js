@@ -34,12 +34,16 @@ router.post("/", isAuthenticated, canSaveMessage, async (req, res, next) => {
 });
 
 router.put("/:pk", isAuthenticated, canSaveMessage, isMessageExists, async(req, res, next) => {
+  try {
     const instance = req.validatedData;
-    const { recipientId, ...data } = req.body;
-
+    const { recipientId, sender, ...data } = req.body;
+  
     const updated = await instance.update(data);
-
+  
     res.json(updated);
+  } catch (error) {
+    next(error)
+  }  
 })
 
 module.exports = router;
