@@ -58,7 +58,6 @@ const canSaveMessage = async (req, res, next) => {
         req.body.conversationId = conversation.id;
         return next()
     }
-
 }
 
 module.exports = {

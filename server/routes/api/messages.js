@@ -1,16 +1,18 @@
 const router = require("express").Router();
-const { Conversation, Message } = require("../../db/models");
+const { Message } = require("../../db/models");
 const onlineUsers = require("../../onlineUsers");
 const { isAuthenticated } = require("./../auth/middleware");
 const { canSaveMessage } = require("./../../permissions");
-const events = require("./../../utils/events")
+const events = require("./../../utils/events");
+const { messageStatus } = require("./../../db/models/choices");
+const { isMessageExists } = require("./../../validations");
 
 // expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists yet)
 router.post("/", isAuthenticated, canSaveMessage, async (req, res, next) => {
   try {
     const senderId = req.user.id;
     // const conversationId = req.conversationId // This property is set in the request object after validation in canSaveMessage middleware.
-    const { text, sender, conversationId } = req.body;
+    const { text, sender, recipientId, conversationId } = req.body;
 
     // listen if is new conversation and change sender status to online
     events.on('newconversation', () => {
@@ -19,12 +21,25 @@ router.post("/", isAuthenticated, canSaveMessage, async (req, res, next) => {
       }
     })
 
-    const message = await Message.create({ senderId, text, conversationId });
+    let status = messageStatus.SENT;
+    // if recipientId is in onlineUsers, set message status to received otherwise set the status leave the status as sent;
+    if (onlineUsers.includes(recipientId)) status = messageStatus.RECEIVED;
+
+    const message = await Message.create({ senderId, text, conversationId, status });
     return res.json({ message, sender });
 
   } catch (error) {
     next(error);
   }
 });
+
+router.put("/:pk", isAuthenticated, canSaveMessage, isMessageExists, async(req, res, next) => {
+    const instance = req.validatedData;
+    const { recipientId, ...data } = req.body;
+
+    const updated = await instance.update(data);
+
+    res.json(updated);
+})
 
 module.exports = router;
