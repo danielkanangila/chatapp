@@ -1,18 +1,19 @@
 const Sequelize = require("sequelize");
 const db = require("../db");
+const { messageStatus } = require("./choices");
 
 const Message = db.define("message", {
   text: {
-    type: Sequelize.STRING,
+    type: Sequelize.TEXT,
     allowNull: false,
   },
   senderId: {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
-  read: {
-    type: Sequelize.BOOLEAN,
-    default: false,
+  status: {
+    type: Sequelize.STRING,
+    default: messageStatus.SENT,
   }
 });
 
