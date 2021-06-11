@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   notification: {
     height: 20,
     width: 20,
-    backgroundColor: "#3F92FF",
+    backgroundImage: "linear-gradient(225deg, #6CC1FF 0%, #3A8DFF 100%)",
     marginRight: 10,
     color: "white",
     fontSize: 10,
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 const ChatContent = (props) => {
   const classes = useStyles();
 
-  const { conversation } = props;
+  const { conversation, notification } = props;
   const { latestMessageText, otherUser } = conversation;
 
   return (
@@ -50,6 +50,9 @@ const ChatContent = (props) => {
           {latestMessageText}
         </Typography>
       </Box>
+      {notification > 0 && 
+        <Box component="span" className={classes.notification}>{notification}</Box>
+      }
     </Box>
   );
 };

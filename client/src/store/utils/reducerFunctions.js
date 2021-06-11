@@ -16,6 +16,7 @@ export const addMessageToStore = (state, payload) => {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
+      convoCopy.unreadMessages += 1;
 
       return convoCopy;
     } else {
@@ -31,6 +32,7 @@ export const updateMessageInStore = (state, payload) => {
     if(conversation.id === message.conversationId) {
       return {
         ...conversation,
+        unreadMessages: conversation.unreadMessages - 1,
         messages: conversation.messages.map(m => m.id === message.id ? message : m)
       }
     } else {
