@@ -24,7 +24,7 @@ router.post("/", isAuthenticated, canSaveMessage, async (req, res, next) => {
 
     let status = messageStatus.SENT;
     // if recipientId is in onlineUsers, set message status to received otherwise set the status leave the status as sent;
-    if (socketSessions.isUserOnline(recipientId)) status = messageStatus.READ;
+    // if (socketSessions.isUserOnline(recipientId)) status = messageStatus.READ;
 
     const message = await Message.create({ senderId, text, conversationId, status });
     return res.json({ message, sender });

@@ -51,14 +51,17 @@ const ActiveChat = (props) => {
   }, [dispatch, conversation, emitMessageUpdated]);
 
   const addMessagesToConversation = useCallback(({ message, recipientId, sender }) => {
-    dispatch(setNewMessage(message, null));
+      dispatch(setNewMessage(message, null));
 
+      if (!socket) return;
+      // emit update message event to update the status of message to received
+      if (message.status === "read") return ;
 
-    if (!socket) return;
-    // emit update message event to update the status of message to received
-    if (message.status === "read") return;
-      updateMessageInServer(message.id, {...message,status: "received"});
-    }, [dispatch, socket, updateMessageInServer]);
+      // if is active chat set status to read otherwise received
+      const status = (conversation?.id === message.conversationId) ? "read" : "received";
+
+      updateMessageInServer(message.id, {...message, status });
+    }, [dispatch, socket, updateMessageInServer, conversation?.id]);
 
   /** Update message is the server emit update-message envent */
   const updateMessageInConversationStore = useCallback((message) => {
@@ -122,7 +125,7 @@ const mapStateToProps = (state) => {
       state.conversations &&
       state.conversations.find(
         (conversation) => conversation.otherUser.username === state.activeConversation
-      )
+      ),
   };
 };
 
