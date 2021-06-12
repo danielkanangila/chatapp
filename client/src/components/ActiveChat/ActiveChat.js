@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
@@ -20,11 +20,14 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     // flexGrow: 1,
-    height: 'calc(100vh - 215px)',
+    height: 'calc(100vh - 200px)',
     justifyContent: "space-between",
     overflowX: "auto",
-    padding: theme.spacing(2),
-    marginTop: 115,
+    padding: `${theme.spacing(3)}px ${theme.spacing(2)}px`,
+    [theme.breakpoints.up('md')]: {
+      padding: `${theme.spacing(3)}px ${theme.spacing(4)}px`,
+    },
+    marginTop: 90,
     // paddingBottom: 100,
   }
 }));
@@ -32,13 +35,15 @@ const useStyles = makeStyles((theme) => ({
 const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
-  const conversation = useMemo(() => props.conversation, [props.conversation]) //props.conversation || {};
+  const conversation = useMemo(() => props.conversation, [props.conversation])
   const { socket, emitMessageUpdated } = useWebSocket();
   const dispatch = useDispatch();
-  /**
+  const chatContainerRef = useRef();
+  
+  const updateMessageInServer = useCallback((id, body) => {
+    /**
    * Send request to the server to updated a given message
    */
-  const updateMessageInServer = useCallback((id, body) => {
     dispatch(apiUpdatedMessage(id, {
       recipientId: conversation?.otherUser.id,
       ...body
@@ -48,11 +53,12 @@ const ActiveChat = (props) => {
   const addMessagesToConversation = useCallback(({ message, recipientId, sender }) => {
     dispatch(setNewMessage(message, null));
 
+
     if (!socket) return;
     // emit update message event to update the status of message to received
     if (message.status === "read") return;
-    updateMessageInServer(message.id, {...message,status: "received"});
-  }, [dispatch, socket, updateMessageInServer]);
+      updateMessageInServer(message.id, {...message,status: "received"});
+    }, [dispatch, socket, updateMessageInServer]);
 
   /** Update message is the server emit update-message envent */
   const updateMessageInConversationStore = useCallback((message) => {
@@ -76,6 +82,13 @@ const ActiveChat = (props) => {
     return () => socket.off("updated-message");
   }, [socket, updateMessageInConversationStore])
 
+  /** scroll to the bottom */
+  useEffect(() => {
+    if (!chatContainerRef.current) return;
+    
+    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+  })
+
   return (
     <Box className={classes.root}>
       {conversation?.otherUser && (
@@ -84,7 +97,7 @@ const ActiveChat = (props) => {
             username={conversation.otherUser.username}
             online={conversation.otherUser.online || false}
           />
-          <Box className={classes.chatContainer}>
+          <Box className={classes.chatContainer} ref={chatContainerRef}>
             <Messages
               messages={conversation.messages}
               otherUser={conversation.otherUser}
