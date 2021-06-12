@@ -6,7 +6,6 @@ import { WS_BASE_URL } from "./config";
 import {
     removeOfflineUser,
     addOnlineUser,
-    updateMessage,
 } from "./store/conversations"
 
 export const WebSocketContext = createContext();
@@ -24,8 +23,6 @@ const WebSocketContextProvider = ({ children }) => {
             mySocket.connect();
         }
 
-
-        socket.on('update-message', data => dispatch(updateMessage(data)));
         mySocket.on("add-online-user", (id) => {
             dispatch(addOnlineUser(id));
         });

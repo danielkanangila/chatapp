@@ -1,12 +1,10 @@
-import React, { useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Avatar } from "@material-ui/core";
 import VisibilitySensor from "react-visibility-sensor";
 import { useWebSocket } from "../../hooks/useWebSocket";
 import { updateMessage } from "../../store/utils/thunkCreators";
-
-import { useWindowVisibility } from "../../hooks/useWindowVisibility";
 
 export const messageStatus = {
   SENT: 'sent',
@@ -55,38 +53,46 @@ const OtherUserBubble = ({
   const classes = useStyles();
   const chatRef = useRef();
   const dispatch = useDispatch();
-  const ws = useWebSocket();
-  const myWindow = useWindowVisibility();
+  const { emitMessageUpdated } = useWebSocket();
+  const [visibility, setVisibility] = useState(false);
+  // const myWindow = useWindowVisibility();
 
-  const updateMessageStatus = (newStatus) => {
+  const updateMessageStatus = useCallback((newStatus) => {
     dispatch(updateMessage(id, { 
       recipientId: otherUser.id, 
       senderId,
       status: newStatus
-    }, ws.emitMessageUpdated));
-  }
+    }, emitMessageUpdated));
+  }, [dispatch, emitMessageUpdated, id, senderId, otherUser.id]);
 
-  const handleVisibilityChange = (isVisible) => {
-    if (status === messageStatus.READ) return;
-
-    if(myWindow.isWindowVisible && isVisible) {
-      /**
+  useEffect(() => {
+    /**
      * Updating message status to READ if window is visible and this message 
      * component is in the viewport.
-     */
-      
+    */
+    if (visibility && status !== messageStatus.READ) 
       updateMessageStatus(messageStatus.READ);
-    } else {
-      /**
-       * If windows is not visible and this message component is not visible in
-       * the viewport but the application is running, we're changing the message to RECEIVED
-       */
-       updateMessageStatus(messageStatus.RECEIVED);
-    }
-  }
+  }, [updateMessageStatus, visibility, status]);
+
+  // const handleVisibilityChange = useCallback(isVisible) => {
+  //   if (status === messageStatus.READ) return;
+  //   console.log(isVisible);
+
+  //   if(isVisible) {
+  
+      
+  //     updateMessageStatus(messageStatus.READ);
+  //   } else {
+  //     /**
+  //      * If windows is not visible and this message component is not visible in
+  //      * the viewport but the application is running, we're changing the message to RECEIVED
+  //      */
+  //     //  updateMessageStatus(messageStatus.RECEIVED);
+  //   }
+  // }
 
   return (
-    <VisibilitySensor onChange={handleVisibilityChange}>
+    <VisibilitySensor onChange={(isVisible) => setVisibility(isVisible)}>
       <Box className={classes.root} ref={chatRef}>
         <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
         <Box>

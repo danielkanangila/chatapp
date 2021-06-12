@@ -25,20 +25,22 @@ export const addMessageToStore = (state, payload) => {
   });
 };
 
-export const updateMessageInStore = (state, payload) => {
-  const { message } = payload;
-
+export const updateMessageInStore = (state, message) => {
   return state.map(conversation => {
     if(conversation.id === message.conversationId) {
+      const newMessages = conversation.messages.map(m => m.id === message.id ? message : m)
+      let unreadCount = conversation.unreadMessages
+      if (message.status === "read") unreadCount -= 1;
+
       return {
         ...conversation,
-        unreadMessages: conversation.unreadMessages - 1,
-        messages: conversation.messages.map(m => m.id === message.id ? message : m)
+        unreadMessages: unreadCount,
+        messages: newMessages
       }
     } else {
       return conversation;
     }
-  })
+  });
 }
 
 export const addOnlineUserToStore = (state, id) => {

@@ -9,7 +9,7 @@ const addOnlineUser = (socket) => {
 }
 
 const updateMessage = (socket, message) => {
-    socket.broadcast.emit("update-message", message);
+    socket.broadcast.to(message.senderId).emit("updated-message", message);
 }
 const newMessage = (socket, { message, recipientId, sender }) => {
     socket.broadcast.to(recipientId).emit("receive-message", { 
