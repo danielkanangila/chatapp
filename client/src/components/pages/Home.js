@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { grey } from "@material-ui/core/colors";
 import { connect, useDispatch } from "react-redux";
-import { Grid, CssBaseline } from "@material-ui/core";
+import { Grid, CssBaseline, Box, CircularProgress, Typography } from "@material-ui/core";
 import { SidebarContainer } from "./.././Sidebar";
 import { ActiveChat } from "./.././ActiveChat";
 import { fetchConversations } from "./.././../store/utils/thunkCreators";
 import { useAuth } from "../../hooks/useAuth";
-import { setActiveChat } from "../../store/activeConversation";
 import { useWebSocket } from "../../hooks/useWebSocket";
 import { useWindowVisibility } from "../../hooks/useWindowVisibility";
 
@@ -37,12 +37,22 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
   },
-  
+  progress: {
+    position: "absolute",
+    top: "40%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "fit-content",
+  },
+  progressLabel: {
+    fontSize: "1.5rem",
+    color: grey[400],
+    padding: 20,
+  }
 }))
 
 const Home = (props) => {
   const { user } = useAuth();
-  const { conversations } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const ws = useWebSocket();
@@ -62,11 +72,7 @@ const Home = (props) => {
     return () => [];
   }, [isWindowVisible]) // eslint-disable-line
 
-  useEffect(() => {
-    console.log(conversations[0]);
-    if (conversations.length)
-      dispatch(setActiveChat(conversations[0].otherUser.username))
-  }, [dispatch, conversations])
+  if (user.isFetching) return <Progress />
 
   return (
     <Grid className={classes.root}>
@@ -75,6 +81,18 @@ const Home = (props) => {
       <ActiveChat />
     </Grid>
   );
+}
+
+const Progress = ({ visibility=true }) => {
+  const classes = useStyles();
+
+  if (!visibility) return <></>;
+
+  return (
+  <Grid container className={classes.progress} direction="column" justify="center" alignItems="center">
+    <CircularProgress />
+    <Typography variant="h1" className={classes.progressLabel}>Loading....</Typography>
+  </Grid>)
 }
 
 const mapStateToProps = (state) => {

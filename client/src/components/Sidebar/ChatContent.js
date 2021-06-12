@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useAuth } from "../../hooks/useAuth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ChatContent = (props) => {
   const classes = useStyles();
+  const { user } = useAuth()
 
   const { conversation, notification } = props;
   const { latestMessageText, otherUser } = conversation;
@@ -50,7 +52,7 @@ const ChatContent = (props) => {
           {latestMessageText}
         </Typography>
       </Box>
-      {notification > 0 && 
+      {(notification > 0) &&
         <Box component="span" className={classes.notification}>{notification}</Box>
       }
     </Box>

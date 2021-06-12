@@ -10,7 +10,7 @@ const ProtectedRoute = ({ component: Component, ...restOfProps }) => {
         <Route
           {...restOfProps}
           render={(props) => {
-            if (user?.id) {
+            if (user?.isFetching || user?.id) {
               return <Component {...props} />;
             }
             return <Redirect to="/login" />;
