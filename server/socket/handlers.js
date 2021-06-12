@@ -1,26 +1,29 @@
-const onlineUsers = require("./../onlineUsers");
+const sessions = require("./store");
 
-const addOnlineUser = (socket, userId) => {
-    if (!onlineUsers.includes(userId)) {
-        onlineUsers.push(userId);
+const addOnlineUser = (socket) => {
+    if (!sessions.findWhere("userId", socket.userId)) {
+        sessions.save(socket.sessionId, { userId: socket.userId });
     }
     // send the user who just went online to everyone else who is already online
-    socket.broadcast.emit("add-online-user", userId);
-}
-
-const newMessage = (socket, { message, sender }) => {
-    socket.broadcast.emit("new-message", { message, sender });
+    socket.broadcast.emit("add-online-user", socket.userId);
 }
 
 const updateMessage = (socket, message) => {
     socket.broadcast.emit("update-message", message);
 }
+const newMessage = (socket, { message, recipientId, sender }) => {
+    socket.broadcast.to(recipientId).emit("receive-message", { 
+        message, 
+        sender,
+        recipientId
+    });
+}
 
-const logout = (socket, userId) => {
-    if (onlineUsers.includes(userId)) {
-        userIndex = onlineUsers.indexOf(userId);
-        onlineUsers.splice(userIndex, 1);
-        socket.broadcast.emit("remove-offline-user", userId);
+const logout = (socket) => {
+    if (sessions.find(socket.sessionId)) {
+        sessions.remove(socket.sessionId);
+        socket.sessionId = undefined;
+        socket.broadcast.emit("remove-offline-user", socket.userId);
     }
 }
 

@@ -27,7 +27,7 @@ const Routes = (props) => {
   }, [fetchUser])
 
   useEffect(() => {
-    // signal socket sever that user in online
+    // signal socket sever that user is online
     if (user.id) ws.goOnline(user); 
   }, [user]) // eslint-disable-line
 

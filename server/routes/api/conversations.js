@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const { User, Conversation, Message } = require("../../db/models");
-const { Op, Sequelize } = require("sequelize");
-const onlineUsers = require("../../onlineUsers");
+const { Op } = require("sequelize");
 const { isAuthenticated } = require("./../auth/middleware");
+const socketSessions = require("./../../socket/store")
+
 // get all conversations for a user, include latest message text for preview, and all messages
 // include other user model so we have info on username/profile pic (don't include current user info)
 // TODO: for scalability, implement lazy loading
@@ -63,11 +64,7 @@ router.get("/", isAuthenticated, async (req, res, next) => {
       convoJSON.unreadMessages = unread.length;
 
       // set property for online status of the other user
-      if (onlineUsers.includes(convoJSON.otherUser.id)) {
-        convoJSON.otherUser.online = true;
-      } else {
-        convoJSON.otherUser.online = false;
-      }
+      convoJSON.otherUser.online = socketSessions.isUserOnline(convoJSON.otherUser.id);
 
       // set properties for notification count and latest message preview
       convoJSON.latestMessageText = convoJSON.messages[0].text;

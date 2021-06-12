@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup"
 import { useWebSocket } from "./useWebSocket";
@@ -14,10 +14,6 @@ export const useAuth = () => {
     const user = useSelector(state => state.user);
     const dispatch = useDispatch();
     const ws = useWebSocket();
-
-    useEffect(() => {
-        if(user.id) ws.goOnline(user) // signal socket server that user is online
-    }, [user])// eslint-disable-line
 
     const registerInitialValue = {
         username: "",
@@ -52,19 +48,22 @@ export const useAuth = () => {
     const register = async (data, { resetForm }) => {
         await dispatch(createUser(data))
 
+        // then reset from or handle error if any
         _handleResponse(resetForm)
     
     }
 
     const login = async (data, { resetForm }) => {
         await dispatch(authenticateUser(data))
-        
+
+        // then reset from or handle error if any
         _handleResponse(resetForm)
     }
 
     const logout = async () => {
         dispatch(logoutUser(user.id));
         dispatch(clearOnLogout());
+        // emit logout event
         ws.logout(user.id);
     }
 
