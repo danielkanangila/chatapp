@@ -25,13 +25,6 @@ const useStyles = makeStyles(() => ({
     fontWeight: "bold",
     marginLeft: 17
   },
-  ellipsis: {
-    color: "#95A7C4",
-    opacity: 0.5
-  },
-  btnMenu: {
-    marginRight: 24,
-  }
 }));
 
 const CurrentUser = (props) => {

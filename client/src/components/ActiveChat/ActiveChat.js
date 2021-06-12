@@ -7,19 +7,25 @@ import { useWebSocket } from "../../hooks/useWebSocket";
 import { setNewMessage, updateMessage } from "./../../store/conversations";
 import { updateMessage as apiUpdatedMessage } from "./../../store/utils/thunkCreators";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexGrow: 8,
-    flexDirection: "column"
+    flexDirection: "column",
+    position: 'relative',
   },
   chatContainer: {
-    marginLeft: 41,
-    marginRight: 41,
+    // marginLeft: 41,
+    // marginRight: 41,
     display: "flex",
     flexDirection: "column",
-    flexGrow: 1,
-    justifyContent: "space-between"
+    // flexGrow: 1,
+    height: 'calc(100vh - 215px)',
+    justifyContent: "space-between",
+    overflowX: "auto",
+    padding: theme.spacing(2),
+    marginTop: 115,
+    // paddingBottom: 100,
   }
 }));
 

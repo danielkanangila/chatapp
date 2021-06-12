@@ -10,18 +10,28 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     height: 89,
     marginBottom: 34,
-    boxShadow: "0 2px 20px 0 rgba(88,133,196,0.10)"
+    boxShadow: "0 2px 20px 0 rgba(88,133,196,0.10)",
+    position: "fixed",
+    top: 0,
+    width: '100%',
+    backgroundColor: "#fff",
+    zIndex: 1100
   },
   content: {
     display: "flex",
     alignItems: "center",
-    marginLeft: 24
+    marginLeft: 24,
+    width: '80%',
   },
   username: {
     fontSize: 20,
     letterSpacing: -0.29,
     fontWeight: "bold",
-    marginRight: 14
+    maxWidth: "50%",
+    overflow: 'hidden',
+    marginRight: 14,
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
   },
   statusText: {
     fontSize: 12,

@@ -7,14 +7,21 @@ import { useWebSocket } from "../../hooks/useWebSocket";
 
 const styles = {
   root: {
-    justifySelf: "flex-end",
-    marginTop: 15,
+    // justifySelf: "flex-end",
+    // marginTop: 15,
+    position: 'absolute',
+    backgroundColor: "#fff",
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    padding: "10px 10px",
+    boxShadow: '0px -5px 5px 0px rgba(0,0,0,0.15);'
   },
   input: {
     height: 70,
     backgroundColor: "#F4F6FA",
     borderRadius: 8,
-    marginBottom: 20,
+    // marginBottom: 20,
   },
 };
 
