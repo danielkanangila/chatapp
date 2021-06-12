@@ -59,10 +59,6 @@ router.get("/", isAuthenticated, async (req, res, next) => {
         delete convoJSON.user2;
       }
 
-      // count and set unread message
-      const unread = convoJSON.messages.filter(m => (m.status === 'sent' || m.status === 'received') && m.senderId !== req.user.id);
-      convoJSON.unreadMessages = unread.length;
-
       // set property for online status of the other user
       convoJSON.otherUser.online = socketSessions.isUserOnline(convoJSON.otherUser.id);
 
