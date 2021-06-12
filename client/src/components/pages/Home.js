@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { connect, useDispatch } from "react-redux";
-import { Grid, CssBaseline, Button } from "@material-ui/core";
+import { Grid, CssBaseline } from "@material-ui/core";
 import { SidebarContainer } from "./.././Sidebar";
 import { ActiveChat } from "./.././ActiveChat";
 import { fetchConversations } from "./.././../store/utils/thunkCreators";
@@ -16,7 +16,7 @@ const styles = {
 };
 
 const Home = (props) => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { classes } = props;
   const dispatch = useDispatch();
   const ws = useWebSocket();
@@ -38,10 +38,6 @@ const Home = (props) => {
 
   return (
     <>
-      {/* logout button will eventually be in a dropdown next to username */}
-      <Button className={classes.logout} onClick={logout}>
-        Logout
-      </Button>
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
         <SidebarContainer />
