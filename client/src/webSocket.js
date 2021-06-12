@@ -1,10 +1,9 @@
-import React, { createContext } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import io from "socket.io-client";
-import { useDispatch } from "react-redux";
 
 import { WS_BASE_URL } from "./config";
 import {
-    setNewMessage,
     removeOfflineUser,
     addOnlineUser,
 } from "./store/conversations"
@@ -12,35 +11,39 @@ import {
 export const WebSocketContext = createContext();
 
 const WebSocketContextProvider = ({ children }) => {
+    const [socket, setSocket] = useState();
+    const user = useSelector(state => state.user);
     const dispatch = useDispatch();
 
-    let socket;
+    useEffect(() => {
+        const mySocket = io(WS_BASE_URL, { autoConnect: false });
+        // connect the socket only if the user is authenticated
+        if (user.id) {
+            mySocket.auth = { userId: user.id, username: user.username };
+            mySocket.connect();
+        }
 
-    if (!socket) {
-        socket = io(WS_BASE_URL);
-
-        socket.on("connect", () => {
-            console.log("connected to server");
-          
-            socket.on("add-online-user", (id) => {
-              dispatch(addOnlineUser(id));
-            });
-          
-            socket.on("remove-offline-user", (id) => {
-              dispatch(removeOfflineUser(id));
-            });
-            socket.on("new-message", (data) => {
-              dispatch(setNewMessage(data.message, data.sender));
-            });
-
-            socket.on("connect_error", (err) => console.log(err.message));
-
-            socket.on("disconnet", () => console.log("Connection closed by the server."))
+        mySocket.on("add-online-user", (id) => {
+            dispatch(addOnlineUser(id));
         });
-    }
+        
+        mySocket.on("remove-offline-user", (id) => {
+            dispatch(removeOfflineUser(id));
+        });
+        
+        mySocket.onAny((event, ...args) => {
+            console.log(event, args);
+        });
+        mySocket.on("connect_error", (err) => console.log(err.message || err));
+        mySocket.on("disconnet", () => console.log("Connection closed by the server."))
+
+        setSocket(mySocket);
+
+        return () => mySocket.close();
+    }, [user]) // eslint-disable-line
 
     return (
-        <WebSocketContext.Provider value={{ socket  }}>
+        <WebSocketContext.Provider value={{ socket }}>
             { children }
         </WebSocketContext.Provider>
     )
