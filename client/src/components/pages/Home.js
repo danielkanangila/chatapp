@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { grey } from "@material-ui/core/colors";
 import { connect, useDispatch } from "react-redux";
-import { Grid, CssBaseline, Box, CircularProgress, Typography } from "@material-ui/core";
+import { Grid, CssBaseline, CircularProgress, Typography } from "@material-ui/core";
 import { SidebarContainer } from "./.././Sidebar";
 import { ActiveChat } from "./.././ActiveChat";
 import { fetchConversations } from "./.././../store/utils/thunkCreators";
