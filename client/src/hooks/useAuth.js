@@ -15,13 +15,6 @@ export const useAuth = () => {
     const dispatch = useDispatch();
     const ws = useWebSocket();
 
-    // useEffect(() => {
-    //     // connect to socket if user successfully login
-    //     if (user.id) ws.connect(user.id, user.username);
-    //     // then emit go-inline event
-    //     // if(user.id) ws.goOnline(user);
-    // }, [user])// eslint-disable-line
-
     const registerInitialValue = {
         username: "",
         email: "",
@@ -54,7 +47,7 @@ export const useAuth = () => {
 
     const register = async (data, { resetForm }) => {
         await dispatch(createUser(data))
-        ws.connect(user.id, user.username)
+
         // then reset from or handle error if any
         _handleResponse(resetForm)
     
@@ -62,7 +55,7 @@ export const useAuth = () => {
 
     const login = async (data, { resetForm }) => {
         await dispatch(authenticateUser(data))
-        ws.connect(user.id, user.username)
+
         // then reset from or handle error if any
         _handleResponse(resetForm)
     }
