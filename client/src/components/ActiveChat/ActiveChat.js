@@ -26,13 +26,14 @@ const useStyles = makeStyles(() => ({
 const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
-  const conversation = useMemo(() => props.conversation, [props.conversation]) //props.conversation || {};
+  const conversation = useMemo(() => props.conversation, [props.conversation]) 
   const { socket, emitMessageUpdated } = useWebSocket();
   const dispatch = useDispatch();
-  /**
+
+  const updateMessageInServer = useCallback((id, body) => {
+    /**
    * Send request to the server to updated a given message
    */
-  const updateMessageInServer = useCallback((id, body) => {
     dispatch(apiUpdatedMessage(id, {
       recipientId: conversation?.otherUser.id,
       ...body
@@ -40,13 +41,17 @@ const ActiveChat = (props) => {
   }, [dispatch, conversation, emitMessageUpdated]);
 
   const addMessagesToConversation = useCallback(({ message, recipientId, sender }) => {
-    dispatch(setNewMessage(message, null));
+      dispatch(setNewMessage(message, null));
 
-    if (!socket) return;
-    // emit update message event to update the status of message to received
-    if (message.status === "read") return;
-    updateMessageInServer(message.id, {...message,status: "received"});
-  }, [dispatch, socket, updateMessageInServer]);
+      if (!socket) return;
+      // emit update message event to update the status of message to received
+      if (message.status === "read") return ;
+
+      // if is active chat set status to read otherwise received
+      const status = (conversation?.id === message.conversationId) ? "read" : "received";
+
+      updateMessageInServer(message.id, {...message, status });
+    }, [dispatch, socket, updateMessageInServer, conversation?.id]);
 
   /** Update message is the server emit update-message envent */
   const updateMessageInConversationStore = useCallback((message) => {
