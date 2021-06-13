@@ -41,7 +41,7 @@ const ActiveChat = (props) => {
   }, [dispatch, conversation, emitMessageUpdated]);
 
   const addMessagesToConversation = useCallback(({ message, recipientId, sender }) => {
-      dispatch(setNewMessage(message, null));
+      dispatch(setNewMessage(message, sender));
 
       if (!socket) return;
       // emit update message event to update the status of message to received

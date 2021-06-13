@@ -6,6 +6,7 @@ const { canSaveMessage } = require("./../../permissions");
 const events = require("./../../utils/events");
 const { messageStatus } = require("./../../db/models/choices");
 const { isMessageExists } = require("./../../validations");
+const sessionStore = require("../../socket/store");
 
 // expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists yet)
 router.post("/", isAuthenticated, canSaveMessage, async (req, res, next) => {
@@ -15,11 +16,11 @@ router.post("/", isAuthenticated, canSaveMessage, async (req, res, next) => {
     const { text, sender, recipientId, conversationId } = req.body;
 
     // listen if is new conversation and change sender status to online
-    events.on('newconversation', () => {
-      if (onlineUsers.includes(sender.id)) {
+    if (req.isNewConversation) {
+      if (sessionStore.isUserOnline(sender.id)) {
         sender.online = true;
       }
-    })
+    }
 
     let status = messageStatus.SENT;
 
