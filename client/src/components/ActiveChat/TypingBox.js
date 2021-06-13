@@ -43,12 +43,13 @@ const TypingBox = ({ user,  }) => {
     const { isTyping } = useTypingEvent(user.id);
 
     useEffect(() => {
+        if (!isTyping) return;
         // scroll chat container to the bottom
         const roomEl = document.getElementById("myChatRoom");
         roomEl.scrollTop = roomEl.scrollHeight;
 
         return () => []
-    })
+    }, [isTyping])
 
     if (!isTyping) return <></>;
 
