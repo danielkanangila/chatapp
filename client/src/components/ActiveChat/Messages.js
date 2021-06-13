@@ -2,7 +2,8 @@ import React from "react";
 import { Box } from "@material-ui/core";
 import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import moment from "moment";
-import { orderBy } from "./../../utils"
+import { orderBy } from "./../../utils";
+import TypingBox from "./TypingBox";
 
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
@@ -20,6 +21,7 @@ const Messages = (props) => {
           <OtherUserBubble key={message.id} {...message} time={time} otherUser={otherUser} />
         );
       })}
+      <TypingBox user={otherUser} />
     </Box>
   );
 };

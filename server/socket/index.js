@@ -25,16 +25,18 @@ const initialize = (server) => {
         socket.join(socket.userId);
         // Other events handler
         socket.on("go-online", ((id) => addOnlineUser(socket, id)));
-    
+
         socket.on("new-message", (data) => newMessage(socket, data));
     
         socket.on("update-message", (data) => updateMessage(socket, data));
 
-        socket.on("logout", () => logout(socket, socket.userId))//logout(socket, id));
+        socket.on("logout", () => logout(socket, socket.userId))
 
         socket.on('error', err => console.log(err));
 
-        socket.on("disconnect", () => logout(socket, socket.userId)) //logout(socket, socket.request.user.id))
+        socket.on("disconnect", () => logout(socket, socket.userId)) ;
+
+        socket.on("typing", ({ to }) => socket.broadcast.to(to).emit("otherUser-typing", { from: socket.userId }))
     });
 }
 

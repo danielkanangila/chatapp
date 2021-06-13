@@ -74,23 +74,6 @@ const OtherUserBubble = ({
       updateMessageStatus(messageStatus.READ);
   }, [updateMessageStatus, visibility, status]);
 
-  // const handleVisibilityChange = useCallback(isVisible) => {
-  //   if (status === messageStatus.READ) return;
-  //   console.log(isVisible);
-
-  //   if(isVisible) {
-  
-      
-  //     updateMessageStatus(messageStatus.READ);
-  //   } else {
-  //     /**
-  //      * If windows is not visible and this message component is not visible in
-  //      * the viewport but the application is running, we're changing the message to RECEIVED
-  //      */
-  //     //  updateMessageStatus(messageStatus.RECEIVED);
-  //   }
-  // }
-
   return (
     <VisibilitySensor onChange={(isVisible) => setVisibility(isVisible)}>
       <Box className={classes.root} ref={chatRef}>

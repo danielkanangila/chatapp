@@ -100,7 +100,7 @@ const ActiveChat = (props) => {
             username={conversation.otherUser.username}
             online={conversation.otherUser.online || false}
           />
-          <Box className={classes.chatContainer} ref={chatContainerRef}>
+          <Box className={classes.chatContainer} ref={chatContainerRef} id="myChatRoom">
             <Messages
               messages={conversation.messages}
               otherUser={conversation.otherUser}

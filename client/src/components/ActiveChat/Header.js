@@ -21,13 +21,11 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     marginLeft: 24,
-    width: '80%',
   },
   username: {
     fontSize: 20,
     letterSpacing: -0.29,
     fontWeight: "bold",
-    maxWidth: "50%",
     overflow: 'hidden',
     marginRight: 14,
     whiteSpace: 'nowrap',
