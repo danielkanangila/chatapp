@@ -39,7 +39,6 @@ const ActiveChat = (props) => {
   const { socket, emitMessageUpdated } = useWebSocket();
   const dispatch = useDispatch();
   const chatContainerRef = useRef();
-  
   const updateMessageInServer = useCallback((id, body) => {
     /**
    * Send request to the server to updated a given message
@@ -51,7 +50,7 @@ const ActiveChat = (props) => {
   }, [dispatch, conversation, emitMessageUpdated]);
 
   const addMessagesToConversation = useCallback(({ message, recipientId, sender }) => {
-      dispatch(setNewMessage(message, null));
+      dispatch(setNewMessage(message, sender));
 
       if (!socket) return;
       // emit update message event to update the status of message to received
