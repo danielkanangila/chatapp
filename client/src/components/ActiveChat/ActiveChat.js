@@ -29,8 +29,8 @@ const ActiveChat = (props) => {
   const { socket } = useWebSocket();
   const dispatch = useDispatch();
 
-  const addMessagesToConversation = useCallback(({ message, recipientId, sender }) => {
-    dispatch(setNewMessage(message, null));
+  const addMessagesToConversation = useCallback(({ message, sender }) => {
+    dispatch(setNewMessage(message, sender));
   }, [dispatch]);
 
   useEffect(() => {
