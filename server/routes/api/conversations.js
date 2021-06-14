@@ -20,7 +20,7 @@ router.get("/", isAuthenticated, async (req, res, next) => {
       attributes: ["id"],
       order: [[Message, "createdAt", "ASC"]],
       include: [
-        { model: Message, order: ["createdAt", "ASC"] },
+        { model: Message },
         {
           model: User,
           as: "user1",
