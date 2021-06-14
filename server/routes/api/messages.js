@@ -9,7 +9,6 @@ const events = require("./../../utils/events")
 router.post("/", isAuthenticated, canSaveMessage, async (req, res, next) => {
   try {
     const senderId = req.user.id;
-    // const conversationId = req.conversationId // This property is set in the request object after validation in canSaveMessage middleware.
     const { text, sender, conversationId } = req.body;
 
     // listen if is new conversation and change sender status to online
