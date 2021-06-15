@@ -3,25 +3,23 @@ class SessionsStore {
         this.store = new Map();
     }
 
-    getUserSessionId(userId) {
-      const result = [...this.store.entries()]
-        .filter(({1: v}) => v.userId === userId)
-        .map(([key]) => key);
-      
-      return result.length ? result[0] : undefined; 
-    }
-
     find(id) {
         return this.store.get(id);
     }
 
     findAll() {
-      return [...this.store.values()]
+      return this.store.values();
     }
 
     findWhere(key, value) {
-      const result = [...this.store.values()].filter(item => item[key] === value)
-      return result.length ? result : null
+      let result;
+      this.store.forEach((instance) => {
+        if (instance[key] === value){
+          result = instance;
+          return
+        }
+      })
+      return result;
     }
 
     isUserOnline(userId) {
