@@ -7,7 +7,7 @@ const { Message } = require("../db/models");
  * @param {Function} next | express next callback
  * @returns 
  */
-const isMessageExists = async (req, res, next) => {
+const doesMessageExists = async (req, res, next) => {
     try {
         
         const message = await Message.findByPk(req.params.pk);
@@ -24,5 +24,5 @@ const isMessageExists = async (req, res, next) => {
 }
 
 module.exports = {
-    isMessageExists,
+    doesMessageExists,
 }
