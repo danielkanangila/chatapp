@@ -1,7 +1,7 @@
 const sessions = require("./store");
 
 const addOnlineUser = (socket) => {
-    if (!sessions.findWhere("userId", socket.userId)) {
+    if (!sessions.get(socket.sessionId)) {
         sessions.save(socket.sessionId, { userId: socket.userId });
     }
     // send the user who just went online to everyone else who is already online
@@ -17,9 +17,16 @@ const newMessage = (socket, { message, recipientId, sender }) => {
 }
 
 const logout = (socket) => {
-    if (sessions.find(socket.sessionId)) {
+    if (sessions.get(socket.sessionId)) {
         sessions.remove(socket.sessionId);
         socket.sessionId = undefined;
+        /**
+         * as we are supporting multiple we are going to check is user has another opening session, 
+         * if yes, we will not emit remove-offline-user event.
+         * Otherwise we will emit the event
+         */
+        if (sessions.isUserOnline(socket.userId)) return;
+        
         socket.broadcast.emit("remove-offline-user", socket.userId);
     }
 }

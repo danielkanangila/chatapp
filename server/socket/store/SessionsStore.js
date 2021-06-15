@@ -3,11 +3,11 @@ class SessionsStore {
         this.store = new Map();
     }
 
-    find(id) {
+    get(id) {
         return this.store.get(id);
     }
 
-    findAll() {
+    getAll() {
       return this.store.values();
     }
 
