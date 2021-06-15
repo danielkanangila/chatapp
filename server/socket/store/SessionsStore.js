@@ -16,7 +16,7 @@ class SessionsStore {
       this.store.forEach((instance) => {
         if (instance[key] === value){
           result = instance;
-          return
+          return;
         }
       })
       return result;
