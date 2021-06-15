@@ -32,7 +32,7 @@ const WebSocketContextProvider = ({ children }) => {
         });
         
         mySocket.on("connect_error", (err) => console.log(err.message || err));
-        mySocket.on("disconnet", () => console.log("Connection closed by the server."))
+        mySocket.on("disconnect", () => console.log("Connection closed by the server."))
 
         setSocket(mySocket);
 
