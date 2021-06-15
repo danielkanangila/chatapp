@@ -3,12 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Grid } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import { Check, DoneAll } from "@material-ui/icons";
-
-export const messageStatus = {
-  SENT: 'sent',
-  RECEIVED: 'received',
-  READ: 'read',
-};
+import { messageStatus } from "../../utils";
 
 const useStyles = makeStyles(() => ({
   root: {
