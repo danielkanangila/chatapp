@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { Grid, CssBaseline, Button } from "@material-ui/core";
-import { SidebarContainer } from "./Sidebar";
-import { ActiveChat } from "./ActiveChat";
-import { logout, fetchConversations } from "../store/utils/thunkCreators";
-import { clearOnLogout } from "../store/index";
+import { SidebarContainer } from "./.././Sidebar";
+import { ActiveChat } from "./.././ActiveChat";
+import { logout, fetchConversations } from "./.././../store/utils/thunkCreators";
+import { clearOnLogout } from "./.././../store/index";
 
 const styles = {
   root: {
@@ -40,11 +39,6 @@ class Home extends Component {
 
   render() {
     const { classes } = this.props;
-    if (!this.props.user.id) {
-      // If we were previously logged in, redirect to login instead of register
-      if (this.state.isLoggedIn) return <Redirect to="/login" />;
-      return <Redirect to="/register" />;
-    }
     return (
       <>
         {/* logout button will eventually be in a dropdown next to username */}
