@@ -14,13 +14,13 @@ const styles = {
 };
 
 const Home = (props) => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const { classes } = props;
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchConversations())
-  }, [user]) // eslint-disable-line
+  }, [dispatch])
 
   return (
     <>
