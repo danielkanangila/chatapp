@@ -20,7 +20,7 @@ export const useTypingEvent = (listenFrom) => {
 
         socket.on('otherUser-typing', isUserTyping);
 
-        return () => socket.off('typing');
+        return () => socket.off('otherUser-typing');
     }, [socket, isUserTyping]);
 
     useEffect(() => {
