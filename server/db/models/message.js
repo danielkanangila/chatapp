@@ -12,7 +12,7 @@ const Message = db.define("message", {
     allowNull: false,
   },
   status: {
-    type: Sequelize.STRING,
+    type: Sequelize.ENUM(Object.values(messageStatus)),
     default: messageStatus.SENT,
   }
 });
