@@ -5,7 +5,7 @@ export const useWindowVisibility = () => {
     const isWindowVisible = useSelector(state => state.windowVisibility.isWindowVisible);
     const dispatch = useDispatch();
 
-    const updateVisibility = (e) => dispatch(setVisibilityAction(!isWindowVisible));
+    const updateVisibility = () => dispatch(setVisibilityAction(!isWindowVisible));
 
     const isInViewport = (element) => {
         if (!element) return false;
