@@ -23,13 +23,13 @@ const Routes = (props) => {
   });
 
   useEffect(() => {
-    fetchUser()
-  }, [fetchUser])
+    fetchUser();
+  }, [fetchUser]);
 
   useEffect(() => {
     // signal socket sever that user is online
     if (user.id) ws.goOnline(user); 
-  }, [user]) // eslint-disable-line
+  }, [user]); // eslint-disable-line
 
   useEffect(() => {
     if (user.error) {

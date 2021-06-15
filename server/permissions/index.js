@@ -37,7 +37,7 @@ const canSaveMessage = async (req, res, next) => {
         });
         // if no conversation found, should return 401 error
         if (!conversation)
-            return res.status(401).json({ error: "User not allowed to send message in this conversation or conversation id not found." });
+            return res.status(403).json({ error: "User not allowed to send message in this conversation or conversation id not found." });
         // next handler
         return next()
     } else {

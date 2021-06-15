@@ -40,7 +40,7 @@ const ActiveChat = (props) => {
     }, emitMessageUpdated))
   }, [dispatch, conversation, emitMessageUpdated]);
 
-  const addMessagesToConversation = useCallback(({ message, recipientId, sender }) => {
+  const addMessagesToConversation = useCallback(({ message, sender }) => {
       dispatch(setNewMessage(message, sender));
 
       if (!socket) return;
@@ -57,7 +57,7 @@ const ActiveChat = (props) => {
   const updateMessageInConversationStore = useCallback((message) => {
 
     dispatch(updateMessage(message))
-  }, [dispatch])
+  }, [dispatch]);
 
   useEffect(() => {
     if (!socket) return;

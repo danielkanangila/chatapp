@@ -12,9 +12,7 @@ const sessionStore = require("../../socket/store");
 router.post("/", isAuthenticated, canSaveMessage, async (req, res, next) => {
   try {
     const senderId = req.user.id;
-    // const conversationId = req.conversationId // This property is set in the request object after validation in canSaveMessage middleware.
-    const { text, sender, recipientId, conversationId } = req.body;
-
+    const { text, sender, conversationId } = req.body;
     // listen if is new conversation and change sender status to online
     if (req.isNewConversation) {
       if (sessionStore.isUserOnline(sender.id)) {

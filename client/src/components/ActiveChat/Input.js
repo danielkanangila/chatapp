@@ -19,15 +19,11 @@ const styles = {
 };
 
 const Input = (props) => {
-  const [state, setState] = useState({ text: "" });
+  const [text, setText] = useState("");
   const { classes } = props;
   const ws = useWebSocket();
 
-  const handleChange = (event) => {
-    setState({
-      text: event.target.value,
-    });
-  };
+  const handleChange = (event) => setText(event.target.value);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -40,9 +36,7 @@ const Input = (props) => {
       sender: props.conversationId ? null : props.user,
     };
     await props.postMessage(reqBody, ws.sendMessage);
-    setState({
-      text: "",
-    });
+    setText("");
   };
 
   return (
@@ -52,7 +46,7 @@ const Input = (props) => {
           classes={{ root: classes.input }}
           disableUnderline
           placeholder="Type something..."
-          value={state.text}
+          value={text}
           name="text"
           onChange={handleChange}
         />
@@ -70,8 +64,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    postMessage: (message, cb) => {
-      dispatch(postMessage(message, cb));
+    postMessage: (message, emitSendMessage) => {
+      dispatch(postMessage(message, emitSendMessage));
     },
   };
 };
