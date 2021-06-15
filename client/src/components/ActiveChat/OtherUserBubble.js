@@ -55,7 +55,6 @@ const OtherUserBubble = ({
   const dispatch = useDispatch();
   const { emitMessageUpdated } = useWebSocket();
   const [visibility, setVisibility] = useState(false);
-  // const myWindow = useWindowVisibility();
 
   const updateMessageStatus = useCallback((newStatus) => {
     dispatch(updateMessage(id, { 

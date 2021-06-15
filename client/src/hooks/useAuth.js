@@ -48,7 +48,7 @@ export const useAuth = () => {
     const register = async (data, { resetForm }) => {
         await dispatch(createUser(data))
 
-        // then reset from or handle error if any
+        // then reset form or handle error if any
         _handleResponse(resetForm)
     
     }
@@ -56,7 +56,7 @@ export const useAuth = () => {
     const login = async (data, { resetForm }) => {
         await dispatch(authenticateUser(data))
 
-        // then reset from or handle error if any
+        // then reset form or handle error if any
         _handleResponse(resetForm)
     }
 

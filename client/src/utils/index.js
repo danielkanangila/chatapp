@@ -27,3 +27,9 @@ export const orderBy = (key, order = 'asc') => {
       );
     };
   }
+
+  export const messageStatus = {
+    SENT: 'sent',
+    RECEIVED: 'received',
+    READ: 'read',
+}

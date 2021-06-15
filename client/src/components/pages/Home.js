@@ -60,7 +60,7 @@ const Home = (props) => {
 
   useEffect(() => {
     dispatch(fetchConversations())
-  }, [user]) // eslint-disable-line
+  }, [dispatch])
 
   useEffect(() => {
     /**

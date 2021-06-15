@@ -5,16 +5,14 @@ const { isAuthenticated } = require("./../auth/middleware");
 const { canSaveMessage } = require("./../../permissions");
 const events = require("./../../utils/events");
 const { messageStatus } = require("./../../db/models/choices");
-const { isMessageExists } = require("./../../validations");
+const { doesMessageExists } = require("./../../validations");
 const sessionStore = require("../../socket/store");
 
 // expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists yet)
 router.post("/", isAuthenticated, canSaveMessage, async (req, res, next) => {
   try {
     const senderId = req.user.id;
-    // const conversationId = req.conversationId // This property is set in the request object after validation in canSaveMessage middleware.
-    const { text, sender, recipientId, conversationId } = req.body;
-
+    const { text, sender, conversationId } = req.body;
     // listen if is new conversation and change sender status to online
     if (req.isNewConversation) {
       if (sessionStore.isUserOnline(sender.id)) {
@@ -32,7 +30,7 @@ router.post("/", isAuthenticated, canSaveMessage, async (req, res, next) => {
   }
 });
 
-router.put("/:pk", isAuthenticated, canSaveMessage, isMessageExists, async(req, res, next) => {
+router.put("/:pk", isAuthenticated, canSaveMessage, doesMessageExists, async(req, res, next) => {
   try {
     const instance = req.validatedData;
     const { recipientId, sender, ...data } = req.body;

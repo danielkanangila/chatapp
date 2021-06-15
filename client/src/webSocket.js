@@ -31,11 +31,8 @@ const WebSocketContextProvider = ({ children }) => {
             dispatch(removeOfflineUser(id));
         });
         
-        mySocket.onAny((event, ...args) => {
-            console.log(event, args);
-        });
         mySocket.on("connect_error", (err) => console.log(err.message || err));
-        mySocket.on("disconnet", () => console.log("Connection closed by the server."));
+        mySocket.on("disconnect", () => console.log("Connection closed by the server."));
 
         setSocket(mySocket);
 
