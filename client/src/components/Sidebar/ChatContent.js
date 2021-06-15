@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     color: "#9CADC8",
     letterSpacing: -0.17,
   },
-  notification: {
+  unreadCount: {
     height: 20,
     width: 20,
     backgroundImage: "linear-gradient(225deg, #6CC1FF 0%, #3A8DFF 100%)",
@@ -42,7 +42,7 @@ const ChatContent = (props) => {
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
 
-  const notification = useMemo(() => {
+  const unreadCount = useMemo(() => {
    return conversation.messages.filter(
       m => m.status !== 'read' && m.senderId !== user.id
     ).length;
@@ -58,8 +58,8 @@ const ChatContent = (props) => {
           {latestMessageText}
         </Typography>
       </Box>
-      {(notification > 0) &&
-        <Box component="span" className={classes.notification}>{notification}</Box>
+      {(unreadCount > 0) &&
+        <Box component="span" className={classes.unreadCount}>{unreadCount}</Box>
       }
     </Box>
   );
