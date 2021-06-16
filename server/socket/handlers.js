@@ -8,6 +8,9 @@ const addOnlineUser = (socket) => {
     socket.broadcast.emit("add-online-user", socket.userId);
 }
 
+const updateMessage = (socket, message) => {
+    socket.broadcast.to(message.senderId).emit("updated-message", message);
+}
 const newMessage = (socket, { message, recipientId, sender }) => {
     socket.broadcast.to(recipientId).emit("receive-message", { 
         message, 
@@ -34,5 +37,6 @@ const logout = (socket) => {
 module.exports = {
     addOnlineUser,
     newMessage,
+    updateMessage,
     logout,
 }

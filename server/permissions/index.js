@@ -17,6 +17,7 @@ const canSaveMessage = async (req, res, next) => {
     let conversation;
 
     if (conversationId) {
+        req.isNewConversation = false // used in post request to verify if incoming message is beginning of versation 
         // Find conversation corresponding to the id  and senderId.
         // This block make sure that only conversation owner can send message with this conversationId.
         conversation = await Conversation.findOne({
@@ -53,12 +54,11 @@ const canSaveMessage = async (req, res, next) => {
               user2Id: recipientId,
             });
             // emit event to signal that new conversation is started
-            events.emit('newconversation')
+            req.isNewConversation = true;
         }
         req.body.conversationId = conversation.id;
         return next()
     }
-
 }
 
 module.exports = {

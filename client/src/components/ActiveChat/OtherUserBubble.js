@@ -1,6 +1,16 @@
-import React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Avatar } from "@material-ui/core";
+import VisibilitySensor from "react-visibility-sensor";
+import { useWebSocket } from "../../hooks/useWebSocket";
+import { updateMessage } from "../../store/utils/thunkCreators";
+
+export const messageStatus = {
+  SENT: 'sent',
+  RECEIVED: 'received',
+  READ: 'read',
+};
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -31,22 +41,53 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const OtherUserBubble = (props) => {
+const OtherUserBubble = ({ 
+  id,
+  text, 
+  time, 
+  otherUser, 
+  status, 
+  senderId,
+  messagesRef,
+}) => {
   const classes = useStyles();
-  const { text, time, otherUser } = props;
+  const chatRef = useRef();
+  const dispatch = useDispatch();
+  const { emitMessageUpdated } = useWebSocket();
+  const [visibility, setVisibility] = useState(false);
+
+  const updateMessageStatus = useCallback((newStatus) => {
+    dispatch(updateMessage(id, { 
+      recipientId: otherUser.id, 
+      senderId,
+      status: newStatus
+    }, emitMessageUpdated));
+  }, [dispatch, emitMessageUpdated, id, senderId, otherUser.id]);
+
+  useEffect(() => {
+    /**
+     * Updating message status to READ if window is visible and this message 
+     * component is in the viewport.
+    */
+    if (visibility && status !== messageStatus.READ) 
+      updateMessageStatus(messageStatus.READ);
+  }, [updateMessageStatus, visibility, status]);
+
   return (
-    <Box className={classes.root}>
-      <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
-      <Box>
-        <Typography className={classes.usernameDate}>
-          {otherUser.username} {time}
-        </Typography>
-        <Box className={classes.bubble}>
-          <Typography className={classes.text}>{text}</Typography>
+    <VisibilitySensor onChange={(isVisible) => setVisibility(isVisible)}>
+      <Box className={classes.root} ref={chatRef}>
+        <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
+        <Box>
+          <Typography className={classes.usernameDate}>
+            {otherUser.username} {time}
+          </Typography>
+          <Box className={classes.bubble}>
+            <Typography className={classes.text}>{text}</Typography>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </VisibilitySensor>
   );
 };
 
-export default OtherUserBubble;
+export default React.memo(OtherUserBubble);

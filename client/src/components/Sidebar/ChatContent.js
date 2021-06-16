@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useAuth } from "../../hooks/useAuth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,10 +19,10 @@ const useStyles = makeStyles((theme) => ({
     color: "#9CADC8",
     letterSpacing: -0.17,
   },
-  notification: {
+  unreadCount: {
     height: 20,
     width: 20,
-    backgroundColor: "#3F92FF",
+    backgroundImage: "linear-gradient(225deg, #6CC1FF 0%, #3A8DFF 100%)",
     marginRight: 10,
     color: "white",
     fontSize: 10,
@@ -36,9 +37,16 @@ const useStyles = makeStyles((theme) => ({
 
 const ChatContent = (props) => {
   const classes = useStyles();
+  const { user } = useAuth()
 
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
+
+  const unreadCount = useMemo(() => {
+   return conversation.messages.filter(
+      m => m.status !== 'read' && m.senderId !== user.id
+    ).length;
+  }, [conversation, user])
 
   return (
     <Box className={classes.root}>
@@ -50,6 +58,9 @@ const ChatContent = (props) => {
           {latestMessageText}
         </Typography>
       </Box>
+      {(unreadCount > 0) &&
+        <Box component="span" className={classes.unreadCount}>{unreadCount}</Box>
+      }
     </Box>
   );
 };

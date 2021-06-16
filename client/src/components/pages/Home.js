@@ -7,6 +7,8 @@ import { ActiveChat } from "./.././ActiveChat";
 import { fetchConversations } from "./.././../store/utils/thunkCreators";
 import { useAuth } from "../../hooks/useAuth";
 
+import { useWebSocket } from "../../hooks/useWebSocket";
+import { useWindowVisibility } from "../../hooks/useWindowVisibility";
 const styles = {
   root: {
     height: "97vh",
@@ -14,13 +16,25 @@ const styles = {
 };
 
 const Home = (props) => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const { classes } = props;
   const dispatch = useDispatch();
+  const ws = useWebSocket();
+  const { isWindowVisible } = useWindowVisibility();
 
   useEffect(() => {
     dispatch(fetchConversations())
   }, [dispatch])
+
+  useEffect(() => {
+    /**
+     * emit go-online event if  window is visible
+     * otherwise emit socket logout event 
+     */
+    if (isWindowVisible) ws.goOnline(user);
+    else  ws.logout(user.id);
+    return () => [];
+  }, [isWindowVisible]) // eslint-disable-line
 
   return (
     <>

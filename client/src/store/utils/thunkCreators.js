@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  updateMessage as updateMessageAction,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -94,6 +95,18 @@ export const postMessage = (body, sendMessage) => async (dispatch) => {
     console.error(error);
   }
 };
+
+export const updateMessage = (messageId, body, emitMessageUpdated) => async (dispatch) => {
+  try {
+    const { data } = await axios.put(`/api/messages/${messageId}`, body);
+    
+    dispatch(updateMessageAction(data));
+    // emit update-message in the socket
+    emitMessageUpdated(data)
+  } catch (error) {
+    console.error(error.response || error)
+  }
+}
 
 export const searchUsers = (searchTerm) => async (dispatch) => {
   try {

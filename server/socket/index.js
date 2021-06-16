@@ -3,6 +3,7 @@ const {
     logout, 
     addOnlineUser,
     newMessage,
+    updateMessage,
 } = require("./handlers");
 
 /**
@@ -14,7 +15,7 @@ const initialize = (server) => {
         cors: "*"
     });
 
-    // authenticate user middleware
+    // authenticate user
     io.use(authentication);
   
     io.on("connection", (socket) => {
@@ -27,6 +28,8 @@ const initialize = (server) => {
     
         socket.on("new-message", (data) => newMessage(socket, data));
     
+        socket.on("update-message", (data) => updateMessage(socket, data));
+
         socket.on("logout", () => logout(socket, socket.userId))//logout(socket, id));
 
         socket.on('error', err => console.log(err));
