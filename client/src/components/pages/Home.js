@@ -1,23 +1,59 @@
 import React, { useEffect } from "react";
-import { withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
+import { grey } from "@material-ui/core/colors";
 import { connect, useDispatch } from "react-redux";
-import { Grid, CssBaseline, Button } from "@material-ui/core";
+import { Grid, CssBaseline, CircularProgress, Typography } from "@material-ui/core";
 import { SidebarContainer } from "./.././Sidebar";
 import { ActiveChat } from "./.././ActiveChat";
 import { fetchConversations } from "./.././../store/utils/thunkCreators";
 import { useAuth } from "../../hooks/useAuth";
-
 import { useWebSocket } from "../../hooks/useWebSocket";
 import { useWindowVisibility } from "../../hooks/useWindowVisibility";
-const styles = {
+
+const drawerWidth = 240;
+
+const useStyles = makeStyles((theme) => ({
   root: {
-    height: "97vh",
+    display: 'flex',
+    position: 'absolute',
+    width: '100vw',
+    height: '100vh',
+    overflow: 'hidden',
+    backgroundColor: '#fff',
+  },drawer: {
+    [theme.breakpoints.up('sm')]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
   },
-};
+  menuButton: {
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
+  },
+  // necessary for content to be below app bar
+  toolbar: theme.mixins.toolbar,
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  progress: {
+    position: "absolute",
+    top: "40%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "fit-content",
+  },
+  progressLabel: {
+    fontSize: "1.5rem",
+    color: grey[400],
+    padding: 20,
+  }
+}))
 
 const Home = (props) => {
-  const { user, logout } = useAuth();
-  const { classes } = props;
+  const { user } = useAuth();
+  const classes = useStyles();
   const dispatch = useDispatch();
   const ws = useWebSocket();
   const { isWindowVisible } = useWindowVisibility();
@@ -36,19 +72,27 @@ const Home = (props) => {
     return () => [];
   }, [isWindowVisible]) // eslint-disable-line
 
+  if (user.isFetching) return <Progress />
+
   return (
-    <>
-      {/* logout button will eventually be in a dropdown next to username */}
-      <Button className={classes.logout} onClick={logout}>
-        Logout
-      </Button>
-      <Grid container component="main" className={classes.root}>
-        <CssBaseline />
-        <SidebarContainer />
-        <ActiveChat />
-      </Grid>
-    </>
+    <Grid className={classes.root}>
+      <CssBaseline />
+      <SidebarContainer />
+      <ActiveChat />
+    </Grid>
   );
+}
+
+const Progress = ({ visibility=true }) => {
+  const classes = useStyles();
+
+  if (!visibility) return <></>;
+
+  return (
+  <Grid container className={classes.progress} direction="column" justify="center" alignItems="center">
+    <CircularProgress />
+    <Typography variant="h1" className={classes.progressLabel}>Loading....</Typography>
+  </Grid>)
 }
 
 const mapStateToProps = (state) => {
@@ -60,5 +104,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
   mapStateToProps,
-)(withStyles(styles)(Home));
+)(Home);
 

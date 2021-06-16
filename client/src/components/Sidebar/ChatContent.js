@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useAuth } from "../../hooks/useAuth";
+import { useTypingEvent } from "../../hooks/useTypingEvent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,7 +38,8 @@ const useStyles = makeStyles((theme) => ({
 
 const ChatContent = (props) => {
   const classes = useStyles();
-  const { user } = useAuth()
+  const { user } = useAuth();
+  const { isTyping } = useTypingEvent(props.conversation.otherUser.id);
 
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
@@ -55,7 +57,7 @@ const ChatContent = (props) => {
           {otherUser.username}
         </Typography>
         <Typography className={classes.previewText}>
-          {latestMessageText}
+          {isTyping ? 'Typing...' : latestMessageText}
         </Typography>
       </Box>
       {(unreadCount > 0) &&

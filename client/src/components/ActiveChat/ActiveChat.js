@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
@@ -8,29 +8,38 @@ import { setNewMessage, updateMessage } from "./../../store/conversations";
 import { updateMessage as apiUpdatedMessage } from "./../../store/utils/thunkCreators";
 import { messageStatus } from "../../utils";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexGrow: 8,
-    flexDirection: "column"
+    flexDirection: "column",
+    position: 'relative',
   },
   chatContainer: {
-    marginLeft: 41,
-    marginRight: 41,
+    // marginLeft: 41,
+    // marginRight: 41,
     display: "flex",
     flexDirection: "column",
-    flexGrow: 1,
-    justifyContent: "space-between"
+    // flexGrow: 1,
+    height: 'calc(100vh - 200px)',
+    justifyContent: "space-between",
+    overflowX: "auto",
+    padding: `${theme.spacing(3)}px ${theme.spacing(2)}px`,
+    [theme.breakpoints.up('md')]: {
+      padding: `${theme.spacing(3)}px ${theme.spacing(4)}px`,
+    },
+    marginTop: 90,
+    // paddingBottom: 100,
   }
 }));
 
 const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
-  const conversation = useMemo(() => props.conversation, [props.conversation]) 
+  const conversation = useMemo(() => props.conversation, [props.conversation])
   const { socket, emitMessageUpdated } = useWebSocket();
   const dispatch = useDispatch();
-
+  const chatContainerRef = useRef();
   const updateMessageInServer = useCallback((id, body) => {
     /**
    * Send request to the server to updated a given message
@@ -76,6 +85,13 @@ const ActiveChat = (props) => {
     return () => socket.off("updated-message");
   }, [socket, updateMessageInConversationStore])
 
+  /** scroll to the bottom */
+  useEffect(() => {
+    if (!chatContainerRef.current) return;
+    
+    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+  })
+
   return (
     <Box className={classes.root}>
       {conversation?.otherUser && (
@@ -84,7 +100,7 @@ const ActiveChat = (props) => {
             username={conversation.otherUser.username}
             online={conversation.otherUser.online || false}
           />
-          <Box className={classes.chatContainer}>
+          <Box className={classes.chatContainer} ref={chatContainerRef} id="myChatRoom">
             <Messages
               messages={conversation.messages}
               otherUser={conversation.otherUser}
@@ -109,7 +125,7 @@ const mapStateToProps = (state) => {
       state.conversations &&
       state.conversations.find(
         (conversation) => conversation.otherUser.username === state.activeConversation
-      )
+      ),
   };
 };
 

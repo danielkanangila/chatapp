@@ -14,7 +14,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     "&:hover": {
-      cursor: "grab",
+      cursor: "pointer",
     },
   },
 };
@@ -38,10 +38,8 @@ class Chat extends Component {
           online={otherUser.online}
           sidebar={true}
         />
-        <ChatContent 
-          conversation={this.props.conversation} 
-          notification={this.props.conversation.unreadMessages} 
-        />
+        
+        <ChatContent conversation={this.props.conversation} />
       </Box>
     );
   }

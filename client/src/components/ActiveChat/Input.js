@@ -1,26 +1,32 @@
 import React, { useState } from "react";
 import { FormControl, FilledInput } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
 import { useWebSocket } from "../../hooks/useWebSocket";
 
-const styles = {
+const useStyles = makeStyles(theme => ({
   root: {
-    justifySelf: "flex-end",
-    marginTop: 15,
+    // justifySelf: "flex-end",
+    // marginTop: 15,
+    position: 'absolute',
+    backgroundColor: "#fff",
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    padding: "10px 10px",
   },
   input: {
     height: 70,
     backgroundColor: "#F4F6FA",
     borderRadius: 8,
-    marginBottom: 20,
+    // marginBottom: 20,
   },
-};
+}));
 
 const Input = (props) => {
   const [text, setText] = useState("");
-  const { classes } = props;
+  const classes = useStyles();
   const ws = useWebSocket();
 
   const handleChange = (event) => setText(event.target.value);
@@ -49,6 +55,7 @@ const Input = (props) => {
           value={text}
           name="text"
           onChange={handleChange}
+          onKeyDown={() => ws.socket.emit('typing', { to: props.otherUser.id })}
         />
       </FormControl>
     </form>
@@ -73,4 +80,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(Input));
+)(Input);
