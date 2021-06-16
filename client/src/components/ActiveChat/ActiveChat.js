@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
+import { useWebSocket } from "../../hooks/useWebSocket";
+import { setNewMessage } from "./../../store/conversations"
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -24,6 +26,20 @@ const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
   const conversation = props.conversation || {};
+  const { socket } = useWebSocket();
+  const dispatch = useDispatch();
+
+  const addMessagesToConversation = useCallback(({ message, sender }) => {
+    dispatch(setNewMessage(message, sender));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("receive-message", addMessagesToConversation);
+
+    return () => socket.off("receive-message");
+  }, [socket, addMessagesToConversation]);
 
   return (
     <Box className={classes.root}>

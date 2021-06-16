@@ -1,8 +1,9 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { FormControl, FilledInput } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
+import { useWebSocket } from "../../hooks/useWebSocket";
 
 const styles = {
   root: {
@@ -17,52 +18,40 @@ const styles = {
   },
 };
 
-class Input extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      text: "",
-    };
-  }
+const Input = (props) => {
+  const [text, setText] = useState("");
+  const { classes } = props;
+  const ws = useWebSocket();
 
-  handleChange = (event) => {
-    this.setState({
-      text: event.target.value,
-    });
-  };
+  const handleChange = (event) => setText(event.target.value);
 
-  handleSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
     const reqBody = {
       text: event.target.text.value,
-      recipientId: this.props.otherUser.id,
-      conversationId: this.props.conversationId,
-      sender: this.props.conversationId ? null : this.props.user,
+      recipientId: props.otherUser.id,
+      conversationId: props.conversationId,
+      sender: props.conversationId ? null : props.user,
     };
-    await this.props.postMessage(reqBody);
-    this.setState({
-      text: "",
-    });
+    await props.postMessage(reqBody, ws.sendMessage);
+    setText("");
   };
 
-  render() {
-    const { classes } = this.props;
-    return (
-      <form className={classes.root} onSubmit={this.handleSubmit}>
-        <FormControl fullWidth hiddenLabel>
-          <FilledInput
-            classes={{ root: classes.input }}
-            disableUnderline
-            placeholder="Type something..."
-            value={this.state.text}
-            name="text"
-            onChange={this.handleChange}
-          />
-        </FormControl>
-      </form>
-    );
-  }
+  return (
+    <form className={classes.root} onSubmit={handleSubmit}>
+      <FormControl fullWidth hiddenLabel>
+        <FilledInput
+          classes={{ root: classes.input }}
+          disableUnderline
+          placeholder="Type something..."
+          value={text}
+          name="text"
+          onChange={handleChange}
+        />
+      </FormControl>
+    </form>
+  );
 }
 
 const mapStateToProps = (state) => {
@@ -74,8 +63,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    postMessage: (message) => {
-      dispatch(postMessage(message));
+    postMessage: (message, emitSendMessage) => {
+      dispatch(postMessage(message, emitSendMessage));
     },
   };
 };

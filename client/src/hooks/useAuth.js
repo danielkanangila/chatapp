@@ -1,12 +1,19 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { register as createUser, login as authenticateUser } from "./../store/utils/thunkCreators"
 import * as yup from "yup"
+import { useWebSocket } from "./useWebSocket";
+import { clearOnLogout } from "../store";
+import { 
+    register as createUser, 
+    login as authenticateUser,
+    logout as logoutUser, 
+} from "./../store/utils/thunkCreators";
 
 export const useAuth = () => {
     const [error, setError] = useState();
     const user = useSelector(state => state.user);
     const dispatch = useDispatch();
+    const ws = useWebSocket();
 
     const registerInitialValue = {
         username: "",
@@ -41,14 +48,23 @@ export const useAuth = () => {
     const register = async (data, { resetForm }) => {
         await dispatch(createUser(data))
 
+        // then reset form or handle error if any
         _handleResponse(resetForm)
     
     }
 
     const login = async (data, { resetForm }) => {
         await dispatch(authenticateUser(data))
-        
+
+        // then reset form or handle error if any
         _handleResponse(resetForm)
+    }
+
+    const logout = async () => {
+        dispatch(logoutUser(user.id));
+        dispatch(clearOnLogout());
+        // emit logout event
+        ws.logout(user.id);
     }
 
     return {
@@ -60,5 +76,6 @@ export const useAuth = () => {
         loginValidationSchema,
         register,
         login,
+        logout,
     }
 }

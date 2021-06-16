@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { Grid, CssBaseline, Button } from "@material-ui/core";
 import { SidebarContainer } from "./.././Sidebar";
 import { ActiveChat } from "./.././ActiveChat";
-import { logout, fetchConversations } from "./.././../store/utils/thunkCreators";
-import { clearOnLogout } from "./.././../store/index";
+import { fetchConversations } from "./.././../store/utils/thunkCreators";
+import { useAuth } from "../../hooks/useAuth";
 
 const styles = {
   root: {
@@ -13,46 +13,28 @@ const styles = {
   },
 };
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoggedIn: false,
-    };
-  }
+const Home = (props) => {
+  const { logout } = useAuth();
+  const { classes } = props;
+  const dispatch = useDispatch();
 
-  componentDidUpdate(prevProps) {
-    if (this.props.user.id !== prevProps.user.id) {
-      this.setState({
-        isLoggedIn: true,
-      });
-    }
-  }
+  useEffect(() => {
+    dispatch(fetchConversations())
+  }, [dispatch])
 
-  componentDidMount() {
-    this.props.fetchConversations();
-  }
-
-  handleLogout = async () => {
-    await this.props.logout(this.props.user.id);
-  };
-
-  render() {
-    const { classes } = this.props;
-    return (
-      <>
-        {/* logout button will eventually be in a dropdown next to username */}
-        <Button className={classes.logout} onClick={this.handleLogout}>
-          Logout
-        </Button>
-        <Grid container component="main" className={classes.root}>
-          <CssBaseline />
-          <SidebarContainer />
-          <ActiveChat />
-        </Grid>
-      </>
-    );
-  }
+  return (
+    <>
+      {/* logout button will eventually be in a dropdown next to username */}
+      <Button className={classes.logout} onClick={logout}>
+        Logout
+      </Button>
+      <Grid container component="main" className={classes.root}>
+        <CssBaseline />
+        <SidebarContainer />
+        <ActiveChat />
+      </Grid>
+    </>
+  );
 }
 
 const mapStateToProps = (state) => {
@@ -62,19 +44,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    logout: (id) => {
-      dispatch(logout(id));
-      dispatch(clearOnLogout());
-    },
-    fetchConversations: () => {
-      dispatch(fetchConversations());
-    },
-  };
-};
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
 )(withStyles(styles)(Home));
+
